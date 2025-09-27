@@ -63,33 +63,42 @@ async def apply_to_rochester_regional_health(info: dict, llm: str, resume_path: 
     - Fill out the job application form with the following information: {info}
     - Follow these instructions carefully:
         - Do not skip any fields, even if they are optional. If you do not have the information, make your best guess based on the information provided.
-        Fill out the form from top to bottom, never skip a field to come back to it later. When filling out a field, only focus on one field per step. These are the steps:
-            1) First name
-            2) Last name
-            3) Email
-            4) Phone number
-            5) Resume
-                - When you reach the resume upload section, click on the resume upload button and use the 'Upload resume file' tool to upload the resume
-            6) Postal code
-            7) Country
-            8) State
-            9) City
-            10) Address
-            11) Age
-            12) Are you legally authorized to work in the country for which you are applying?
-            13) Will you now or in the future require sponsorship for employment visa status (e.g., H-1B visa status, etc.) to work legally for Rochester Regional Health?
-            14) Do you have, or are you in the process of obtaining, a professional license? Select no.
-            15) What drew you to healthcare?
-            16) How many years of experience do you have in a related role?
-            17) Gender
-            18) Race
-            19) Hispanic/Latino
-            20) Veteran status
-            21) Disability status
-            22) Today's date
-    - If you encounter anything you are unsure of, infer the answer based on the information provided.
-    - When you reach the resume upload section, click on the resume upload button and use the 'Upload resume file' tool to upload the resume
-    - When you are at the bottom of the page, complete the task using the 'Complete the task' tool.
+        Fill out the form from top to bottom, never skip a field to come back to it later. When filling out a field, only focus on one field per step. For each of these steps, scroll to the related text. These are the steps:
+            1) use input_text action to fill out the following:
+                - "First name"
+                - "Last name"
+                - "Email"
+                - "Phone number"
+            2) When you reach the resume upload section, use the upload_file_to_element action tool to upload the resume. You are not done yet.
+            3) use input_text action to fill out the following:
+                - "Postal code"
+                - "Country"
+                - "State"
+                - "City"
+                - "Address"
+                - "Age"
+            4) use click_element_by_index action to select the following options:
+                - "Are you legally authorized to work in the country for which you are applying?"
+                - "Will you now or in the future require sponsorship for employment visa status (e.g., H-1B visa status, etc.) to work legally for Rochester Regional Health?"
+                - "Do you have, or are you in the process of obtaining, a professional license?"
+                    - SELECT NO FOR THIS FIELD
+            5) use input_text action to fill out the following:
+                - "What drew you to healthcare?"
+            6) use click_element_by_index action to select the following options:
+                - "How many years of experience do you have in a related role?"
+                - "Gender"
+                - "Race"
+                - "Hispanic/Latino"
+                - "Veteran status"
+                - "Disability status"
+            7) use input_text action to fill out the following:
+                - "Today's date"
+    - Before you start, create a step-by-step plan to complete the entire task. make sure the delegate a step for each field to be filled out.
+    *** IMPORTANT ***: 
+        - You are not done until you have filled out every field of the form.
+        - When you have completed the entire form, perform the done action to finish the task.
+        - PLACE AN EMPHASIS ON STEP 4, the click_element_by_index action. That section should be filled out.
+
     """
 
     available_file_paths = [resume_path]
@@ -109,33 +118,12 @@ async def apply_to_rochester_regional_health(info: dict, llm: str, resume_path: 
 async def main():
     llm = ChatOpenAI(model="gpt-4.1-mini")
 
-    # my_info = {
-    #     "first_name": "Shawn",
-    #     "last_name": "Pana",
-    #     "email": "panashawnu@gmail.com",
-    #     "phone": "209-629-0825",
-    #     "age": "21",
-    #     "US_citizen": True,
-    #     "sponsorship_needed": False,
-
-    #     "resume": "Link to resume",
-    #     "postal_code": "92117",
-    #     "country": "United States",
-    #     "city": "San Diego",
-    #     "address": "5455 Conrad Ave",
-
-    #     "gender": "Male",
-    #     "race": "Asian",
-    #     "Veteran_status": "Not a veteran",
-    #     "disability_status": "No disability"
-    # }
-
     # load json into dict from /Users/shawnpana/Documents/GitHub/AGI-House-Web-Agent-Build-Day/backend/mock/test_data.json
     with open('/Users/shawnpana/Documents/GitHub/AGI-House-Web-Agent-Build-Day/backend/mock/test_data.json') as f:
         mock_info = json.load(f)
 
     results = await apply_to_rochester_regional_health(mock_info, llm, resume_path="/Users/shawnpana/Documents/GitHub/AGI-House-Web-Agent-Build-Day/backend/mock/test_CV.pdf")
-    print("Search Results:", results)
+    print("Search Results:", results.structured_output)
 
 if __name__ == '__main__':
   asyncio.run(main())
