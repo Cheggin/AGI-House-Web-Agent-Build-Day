@@ -61,10 +61,10 @@ const JobCard: React.FC<JobCardProps> = ({ job, applied = false }) => {
         ) : (
           <button
             onClick={handleApply}
-            className="px-4 py-2 text-sm font-medium text-black bg-orange-500 rounded-full hover:bg-orange-400 transition-all transform hover:scale-105"
+            className="px-5 py-2 text-sm font-medium text-black bg-orange-500 rounded-full hover:bg-orange-400 transition-all transform hover:scale-105"
             disabled={job.status !== 'active'}
           >
-            Apply Now
+            Apply with Job Use
           </button>
         )}
       </div>
