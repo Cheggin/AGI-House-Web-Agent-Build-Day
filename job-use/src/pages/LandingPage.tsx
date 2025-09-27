@@ -100,7 +100,7 @@ const LandingPage: React.FC = () => {
       });
 
       showToast('Profile uploaded successfully!', 'success');
-      void navigate('/jobs');
+      void navigate('/profile');
     } catch {
       showToast('Error processing file. Please check the format.', 'error');
       setIsProcessing(false);

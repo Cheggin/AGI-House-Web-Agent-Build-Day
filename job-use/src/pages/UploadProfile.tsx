@@ -108,7 +108,7 @@ const UploadProfile: React.FC = () => {
       });
 
       showToast('Profile uploaded successfully!', 'success');
-      void navigate('/jobs');
+      void navigate('/profile');
     } catch {
       showToast('Error uploading profile. Please try again.', 'error');
     } finally {
