@@ -1,0 +1,3 @@
+fastapi
+python-dotenv
+browser-use
