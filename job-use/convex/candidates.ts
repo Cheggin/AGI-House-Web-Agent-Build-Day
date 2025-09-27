@@ -123,3 +123,44 @@ export const updateCandidate = mutation({
     await ctx.db.patch(id, updates);
   },
 });
+
+export const upsertCandidate = mutation({
+  args: {
+    email: v.string(),
+    password: v.string(),
+    profileType: v.string(),
+    cvUploaded: v.boolean(),
+    firstName: v.string(),
+    lastName: v.string(),
+    eligibilityToWork: v.boolean(),
+    age: v.number(),
+    postCode: v.string(),
+    birthdate: v.string(),
+    phone: v.string(),
+    country: v.string(),
+    county: v.string(),
+    salary: v.string(),
+    profileSummary: v.string(),
+    currentJobTitle: v.string(),
+    currentCompany: v.string(),
+    experience: v.number(),
+  },
+  returns: v.id("candidates"),
+  handler: async (ctx, args) => {
+    // Check if candidate exists
+    const existingCandidate = await ctx.db
+      .query("candidates")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .first();
+
+    if (existingCandidate) {
+      // Update existing candidate
+      await ctx.db.patch(existingCandidate._id, args);
+      return existingCandidate._id;
+    } else {
+      // Create new candidate
+      const candidateId = await ctx.db.insert("candidates", args);
+      return candidateId;
+    }
+  },
+});

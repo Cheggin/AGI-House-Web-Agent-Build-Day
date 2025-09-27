@@ -5,11 +5,16 @@
   --color-dark: #171717;
 }
 
+body {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", system-ui, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     color: var(--color-light);
     background: var(--color-dark);
-    font-family: Arial, Helvetica, sans-serif;
   }
 }
 
@@ -17,6 +22,5 @@
   body {
     color: var(--color-dark);
     background: var(--color-light);
-    font-family: Arial, Helvetica, sans-serif;
   }
 }

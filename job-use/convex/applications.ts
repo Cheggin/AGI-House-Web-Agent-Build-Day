@@ -176,3 +176,15 @@ export const updateApplicationStatus = mutation({
     await ctx.db.patch(args.id, { status: args.status });
   },
 });
+
+export const clearAllApplications = mutation({
+  args: {},
+  returns: v.number(),
+  handler: async (ctx) => {
+    const applications = await ctx.db.query("applications").collect();
+    for (const app of applications) {
+      await ctx.db.delete(app._id);
+    }
+    return applications.length;
+  },
+});

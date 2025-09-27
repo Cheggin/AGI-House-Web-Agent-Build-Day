@@ -4,12 +4,14 @@ interface FileUploaderProps {
   onFileUpload: (file: File) => void;
   accept?: string;
   maxSize?: number;
+  minimal?: boolean;
 }
 
 const FileUploader: React.FC<FileUploaderProps> = ({
   onFileUpload,
   accept = ".json",
-  maxSize = 5 * 1024 * 1024
+  maxSize = 5 * 1024 * 1024,
+  minimal = false
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -68,6 +70,77 @@ const FileUploader: React.FC<FileUploaderProps> = ({
     }
   };
 
+  if (minimal) {
+    return (
+      <div className="w-full max-w-md mx-auto">
+        <div
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+          className={`relative border-2 border-dashed rounded-2xl p-12 text-center transition-all ${
+            isDragging
+              ? 'border-orange-500 bg-orange-500/10'
+              : 'border-gray-800 hover:border-gray-700 bg-gray-950/50'
+          }`}
+        >
+          <input
+            type="file"
+            id="file-upload"
+            className="sr-only"
+            accept={accept}
+            onChange={handleFileChange}
+          />
+
+          {fileName ? (
+            <div className="flex flex-col items-center">
+              <svg className="w-12 h-12 text-green-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="text-sm text-gray-400 font-mono">{fileName}</span>
+            </div>
+          ) : (
+            <>
+              <svg
+                className="mx-auto h-12 w-12 text-gray-600 mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                />
+              </svg>
+
+              <label
+                htmlFor="file-upload"
+                className="cursor-pointer inline-flex items-center px-6 py-3 text-sm font-medium text-black bg-orange-500 rounded-full hover:bg-orange-400 transition-all transform hover:scale-105"
+              >
+                Choose file
+              </label>
+              <p className="mt-3 text-sm text-gray-500">
+                or drag and drop
+              </p>
+            </>
+          )}
+
+          <p className="mt-4 text-xs text-gray-600 font-mono">
+            JSON • MAX {maxSize / (1024 * 1024)}MB
+          </p>
+
+          {error && (
+            <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+              <p className="text-sm text-red-400">{error}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full">
       <div
@@ -77,8 +150,8 @@ const FileUploader: React.FC<FileUploaderProps> = ({
         onDrop={handleDrop}
         className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-all ${
           isDragging
-            ? 'border-blue-500 bg-blue-50'
-            : 'border-gray-300 hover:border-gray-400 bg-white'
+            ? 'border-orange-500 bg-orange-500/10'
+            : 'border-gray-800 hover:border-gray-700 bg-gray-950'
         }`}
       >
         <input
@@ -90,7 +163,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
         />
 
         <svg
-          className="mx-auto h-12 w-12 text-gray-400"
+          className="mx-auto h-12 w-12 text-gray-600"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -106,33 +179,33 @@ const FileUploader: React.FC<FileUploaderProps> = ({
         <div className="mt-4">
           {fileName ? (
             <div className="flex items-center justify-center space-x-2">
-              <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span className="text-sm text-gray-700">{fileName}</span>
+              <span className="text-sm text-gray-400">{fileName}</span>
             </div>
           ) : (
             <>
               <label
                 htmlFor="file-upload"
-                className="cursor-pointer inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                className="cursor-pointer inline-flex items-center px-6 py-3 text-sm font-medium text-black bg-orange-500 rounded-full hover:bg-orange-400 transition-all transform hover:scale-105"
               >
                 Choose file
               </label>
-              <p className="mt-2 text-sm text-gray-600">
+              <p className="mt-2 text-sm text-gray-500">
                 or drag and drop your JSON file here
               </p>
             </>
           )}
         </div>
 
-        <p className="mt-2 text-xs text-gray-500">
+        <p className="mt-2 text-xs text-gray-600 font-mono">
           JSON files up to {maxSize / (1024 * 1024)}MB
         </p>
 
         {error && (
-          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-sm text-red-600">{error}</p>
+          <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+            <p className="text-sm text-red-400">{error}</p>
           </div>
         )}
       </div>

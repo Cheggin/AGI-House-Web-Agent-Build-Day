@@ -67,3 +67,42 @@ export const createBulkJobExperiences = mutation({
     return ids;
   },
 });
+
+export const replaceJobExperiences = mutation({
+  args: {
+    candidateId: v.id("candidates"),
+    experiences: v.array(
+      v.object({
+        company: v.string(),
+        title: v.string(),
+        currentJob: v.boolean(),
+        startDate: v.string(),
+        endDate: v.string(),
+        scope: v.string(),
+      })
+    ),
+  },
+  returns: v.array(v.id("jobExperiences")),
+  handler: async (ctx, args) => {
+    // Delete existing job experiences for this candidate
+    const existingExperiences = await ctx.db
+      .query("jobExperiences")
+      .withIndex("by_candidate", (q) => q.eq("candidateId", args.candidateId))
+      .collect();
+
+    for (const exp of existingExperiences) {
+      await ctx.db.delete(exp._id);
+    }
+
+    // Insert new experiences
+    const ids = [];
+    for (const experience of args.experiences) {
+      const id = await ctx.db.insert("jobExperiences", {
+        candidateId: args.candidateId,
+        ...experience,
+      });
+      ids.push(id);
+    }
+    return ids;
+  },
+});

@@ -15,7 +15,7 @@ export default function App() {
     <Router>
       <AuthProvider>
         <ToastProvider>
-          <div className="min-h-screen bg-gray-50">
+          <div className="min-h-screen bg-black">
             <Navigation />
             <Routes>
               <Route path="/" element={<LandingPage />} />

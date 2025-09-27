@@ -70,3 +70,43 @@ export const createBulkQuestions = mutation({
     return ids;
   },
 });
+
+export const replaceQuestions = mutation({
+  args: {
+    candidateId: v.id("candidates"),
+    questions: v.array(
+      v.object({
+        questionId: v.string(),
+        name: v.string(),
+        answer: v.string(),
+        intent: v.string(),
+        answered: v.boolean(),
+        questionType: v.string(),
+        options: v.optional(v.array(v.string())),
+      })
+    ),
+  },
+  returns: v.array(v.id("questions")),
+  handler: async (ctx, args) => {
+    // Delete existing questions for this candidate
+    const existingQuestions = await ctx.db
+      .query("questions")
+      .withIndex("by_candidate", (q) => q.eq("candidateId", args.candidateId))
+      .collect();
+
+    for (const question of existingQuestions) {
+      await ctx.db.delete(question._id);
+    }
+
+    // Insert new questions
+    const ids = [];
+    for (const question of args.questions) {
+      const id = await ctx.db.insert("questions", {
+        candidateId: args.candidateId,
+        ...question,
+      });
+      ids.push(id);
+    }
+    return ids;
+  },
+});

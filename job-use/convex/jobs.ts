@@ -91,35 +91,96 @@ export const seedJobs = mutation({
 
     const jobs = [
       {
-        title: "Senior Software Engineer",
-        company: "TechCorp",
-        location: "San Francisco, CA",
-        salary: "$150,000 - $200,000",
-        description: "We are looking for a Senior Software Engineer to join our growing team. You will be responsible for designing, developing, and maintaining scalable web applications using modern technologies. The ideal candidate has strong experience with React, Node.js, and cloud platforms.",
+        title: "LPN Staff I - Long Term Care",
+        company: "Rochester Regional Health",
+        location: "Newark, NY 14513",
+        salary: "Up to $15,000 Sign-On Bonus",
+        description: "Job Title: LPN Staff I – Long Term Care\nDepartment: Rehab\nLocation: DeMay Living Center\nHours Per Week: 24\nSchedule: Evenings, 2p-10p\n\nRochester Regional Health is seeking a dedicated LPN Staff I to join our Long Term Care facility. This position offers evening shifts with a competitive sign-on bonus. You'll be part of a team committed to providing exceptional care to our residents in a supportive environment.",
         requirements: [
-          "5+ years of professional software development experience",
-          "Strong proficiency in JavaScript/TypeScript",
-          "Experience with React, Node.js, and modern web frameworks",
-          "Familiarity with cloud platforms (AWS, GCP, or Azure)",
-          "Excellent problem-solving and communication skills",
-          "Bachelor's degree in Computer Science or related field"
+          "Current LPN license in New York State",
+          "CPR/BLS certification required",
+          "Experience in long-term care or rehabilitation preferred",
+          "Ability to work evening shifts (2pm-10pm)",
+          "Strong communication and interpersonal skills",
+          "Commitment to providing compassionate patient care"
         ],
         postedDate: new Date().toISOString(),
         status: "active" as const,
       },
       {
-        title: "Product Manager",
-        company: "StartupXYZ",
-        location: "New York, NY",
-        salary: "$120,000 - $160,000",
-        description: "StartupXYZ is seeking an experienced Product Manager to lead product strategy and development. You will work closely with engineering, design, and business teams to deliver innovative solutions that meet customer needs and drive business growth.",
+        title: "Assistant Manager",
+        company: "Hollister Co.",
+        location: "Santa Anita, Arcadia, CA",
+        salary: "$25.00 per hour",
+        description: "The Assistant Manager is a multi-faceted role that merges business strategy, operations, creativity, and people management. Strategically, assistant managers are responsible for driving sales results by analyzing the business and providing best-in-class customer service. They are responsible for overseeing daily store operations including opening and closing routines and driving efficiency in all store processes.\n\nAssistant managers leverage their creative expertise through floorset updates, styling recommendations and product knowledge. They are also talent leaders, driving everything from recruiting and training to engagement and development. With a promote from within philosophy, our Assistant managers will build upon their initial foundation and have the opportunity to grow into future leaders.",
         requirements: [
-          "3+ years of product management experience",
-          "Strong analytical and strategic thinking skills",
-          "Experience with agile development methodologies",
-          "Excellent communication and leadership abilities",
-          "Data-driven decision-making approach",
-          "MBA or equivalent experience preferred"
+          "Bachelor's degree OR one year of supervisory experience in a customer-facing role",
+          "Strong problem-solving skills",
+          "Ability to thrive in a fast-paced environment",
+          "Team building and leadership skills",
+          "Strong interpersonal and communication skills",
+          "Fashion interest and knowledge",
+          "Multi-tasking abilities",
+          "Drive to achieve results"
+        ],
+        postedDate: new Date().toISOString(),
+        status: "active" as const,
+      }
+    ];
+
+    const ids = [];
+    for (const job of jobs) {
+      const id = await ctx.db.insert("jobs", job);
+      ids.push(id);
+    }
+    return ids;
+  },
+});
+
+export const clearAndReseedJobs = mutation({
+  args: {},
+  returns: v.array(v.id("jobs")),
+  handler: async (ctx) => {
+    // Delete all existing jobs
+    const existingJobs = await ctx.db.query("jobs").collect();
+    for (const job of existingJobs) {
+      await ctx.db.delete(job._id);
+    }
+
+    // Add new jobs
+    const jobs = [
+      {
+        title: "LPN Staff I - Long Term Care",
+        company: "Rochester Regional Health",
+        location: "Newark, NY 14513",
+        salary: "Up to $15,000 Sign-On Bonus",
+        description: "Job Title: LPN Staff I – Long Term Care\nDepartment: Rehab\nLocation: DeMay Living Center\nHours Per Week: 24\nSchedule: Evenings, 2p-10p\n\nRochester Regional Health is seeking a dedicated LPN Staff I to join our Long Term Care facility. This position offers evening shifts with a competitive sign-on bonus. You'll be part of a team committed to providing exceptional care to our residents in a supportive environment.",
+        requirements: [
+          "Current LPN license in New York State",
+          "CPR/BLS certification required",
+          "Experience in long-term care or rehabilitation preferred",
+          "Ability to work evening shifts (2pm-10pm)",
+          "Strong communication and interpersonal skills",
+          "Commitment to providing compassionate patient care"
+        ],
+        postedDate: new Date().toISOString(),
+        status: "active" as const,
+      },
+      {
+        title: "Assistant Manager",
+        company: "Hollister Co.",
+        location: "Santa Anita, Arcadia, CA",
+        salary: "$25.00 per hour",
+        description: "The Assistant Manager is a multi-faceted role that merges business strategy, operations, creativity, and people management. Strategically, assistant managers are responsible for driving sales results by analyzing the business and providing best-in-class customer service. They are responsible for overseeing daily store operations including opening and closing routines and driving efficiency in all store processes.\n\nAssistant managers leverage their creative expertise through floorset updates, styling recommendations and product knowledge. They are also talent leaders, driving everything from recruiting and training to engagement and development. With a promote from within philosophy, our Assistant managers will build upon their initial foundation and have the opportunity to grow into future leaders.",
+        requirements: [
+          "Bachelor's degree OR one year of supervisory experience in a customer-facing role",
+          "Strong problem-solving skills",
+          "Ability to thrive in a fast-paced environment",
+          "Team building and leadership skills",
+          "Strong interpersonal and communication skills",
+          "Fashion interest and knowledge",
+          "Multi-tasking abilities",
+          "Drive to achieve results"
         ],
         postedDate: new Date().toISOString(),
         status: "active" as const,

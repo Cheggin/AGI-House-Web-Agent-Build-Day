@@ -39,20 +39,25 @@ const JobsDashboard: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-black text-white py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Job Opportunities</h1>
-          <p className="text-gray-600">
-            {filteredJobs ? `${filteredJobs.length} jobs available` : 'Loading jobs...'}
-          </p>
+          <div className="flex items-center space-x-3 mb-2">
+            <span className="inline-block px-3 py-1 text-xs font-mono text-orange-500 border border-orange-500/30 rounded-full bg-orange-500/10">
+              LIVE
+            </span>
+            <span className="text-xs font-mono text-gray-500">
+              {filteredJobs ? `${filteredJobs.length} OPPORTUNITIES` : 'LOADING...'}
+            </span>
+          </div>
+          <h1 className="text-4xl font-bold">Job Opportunities</h1>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div className="bg-gray-950 border border-gray-900 rounded-lg p-6 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="md:col-span-2">
-              <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
-                Search Jobs
+              <label htmlFor="search" className="block text-xs font-mono text-gray-500 mb-2 uppercase tracking-wider">
+                Search Query
               </label>
               <div className="relative">
                 <input
@@ -61,10 +66,10 @@ const JobsDashboard: React.FC = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Search by title, company, or keywords..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 bg-black border border-gray-800 rounded-lg text-white placeholder-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                 />
                 <svg
-                  className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+                  className="absolute left-3 top-3.5 h-5 w-5 text-gray-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -79,8 +84,8 @@ const JobsDashboard: React.FC = () => {
               </div>
             </div>
             <div>
-              <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
-                Location
+              <label htmlFor="location" className="block text-xs font-mono text-gray-500 mb-2 uppercase tracking-wider">
+                Location Filter
               </label>
               <input
                 type="text"
@@ -88,22 +93,22 @@ const JobsDashboard: React.FC = () => {
                 value={filterLocation}
                 onChange={(e) => setFilterLocation(e.target.value)}
                 placeholder="Filter by location..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 bg-black border border-gray-800 rounded-lg text-white placeholder-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
               />
             </div>
           </div>
         </div>
 
         {!user && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+          <div className="bg-gray-950 border border-orange-500/30 rounded-lg p-6 mb-8">
             <div className="flex items-center">
-              <svg className="h-6 w-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-6 w-6 text-orange-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <div>
-                <p className="text-blue-800 font-medium">Upload your profile to apply</p>
-                <p className="text-blue-600 text-sm">
-                  You need to upload your profile before you can apply to jobs.
+                <p className="text-white font-medium">Authentication Required</p>
+                <p className="text-gray-500 text-sm">
+                  Upload your profile to start applying to positions
                 </p>
               </div>
             </div>
@@ -121,12 +126,14 @@ const JobsDashboard: React.FC = () => {
         </div>
 
         {filteredJobs?.length === 0 && (
-          <div className="text-center py-12">
-            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <p className="mt-4 text-lg text-gray-600">No jobs found</p>
-            <p className="mt-2 text-sm text-gray-500">Try adjusting your search criteria</p>
+          <div className="text-center py-20">
+            <div className="inline-block p-8 bg-gray-950 border border-gray-900 rounded-lg">
+              <svg className="mx-auto h-12 w-12 text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p className="text-lg text-white font-medium mb-2">No matches found</p>
+              <p className="text-sm text-gray-500">Try adjusting your search parameters</p>
+            </div>
           </div>
         )}
       </div>

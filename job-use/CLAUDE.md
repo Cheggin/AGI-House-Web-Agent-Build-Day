@@ -27,20 +27,32 @@ This is a Convex + React (Vite) application with real-time backend capabilities.
 
 ### Project Structure
 - `/src` - React frontend application
-  - `App.tsx` - Main application component demonstrating Convex integration
+  - `App.tsx` - Main application component with routing
   - `main.tsx` - Application entry point
+  - `/pages` - Application pages (LandingPage, JobsDashboard, Profile, etc.)
+  - `/components` - Reusable components (Navigation, JobCard, ProfileCard, etc.)
+  - `/contexts` - Context providers (AuthContext, ToastContext)
 - `/convex` - Convex backend functions and schema
-  - `myFunctions.ts` - Example queries, mutations, and actions
-  - `schema.ts` - Database schema definition (currently has `numbers` table)
+  - `schema.ts` - Database schema definition with 5 tables:
+    - `candidates` - User profiles
+    - `jobExperiences` - Work history
+    - `questions` - Application questions
+    - `jobs` - Job listings
+    - `applications` - Job applications
+  - `candidates.ts` - CRUD operations for candidates
+  - `jobs.ts` - CRUD operations for jobs
+  - `applications.ts` - CRUD operations for applications
+  - `jobExperiences.ts` - CRUD operations for job experiences
+  - `questions.ts` - CRUD operations for questions
   - `_generated/` - Auto-generated Convex API and types (do not edit)
 
 ### Key Convex Patterns
 
 The application demonstrates core Convex patterns:
-- **Queries**: `listNumbers` - Fetches data from database
-- **Mutations**: `addNumber` - Writes data to database
-- **Actions**: `myAction` - Handles third-party API calls and complex operations
+- **Queries**: Fetching candidates, jobs, applications from database
+- **Mutations**: Creating/updating candidates, jobs, applications
 - **Real-time updates**: Data automatically syncs across all connected clients
+- **Indexes**: Efficient querying by email, candidateId, jobId, status
 
 ### Frontend-Backend Integration
 - Import API from `convex/_generated/api` for function references
