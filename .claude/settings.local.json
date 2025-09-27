@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/reagan/Documents/GitHub/resume-use/src/**)",
+      "Read(//Users/reagan/Documents/GitHub/resume-use/convex/**)",
+      "Read(//Users/reagan/Documents/GitHub/resume-use/backend/**)",
+      "Read(//Users/reagan/Documents/GitHub/resume-use/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
