@@ -111,7 +111,8 @@ async def apply_to_rochester_regional_health(info: dict, llm: str, resume_path: 
         - You are not done until you have filled out every field of the form.
         - When you have completed the entire form, perform the done action to finish the task.
         - PLACE AN EMPHASIS ON STEP 4, the click_element_by_index action. That section should be filled out.
-        - if naything pops up that blocks the form, close it out and continue filling out the form.
+        - if anything pops up that blocks the form, close it out and continue filling out the form.
+        - At the end of the task, structure your final result as 1) a human-readable summary of all detections and actions performed on the page with 2) a list with all questions encountered in the page.
     """
 
     available_file_paths = [resume_path]
@@ -138,7 +139,7 @@ async def main():
         mock_info = json.load(f)
 
     results = await apply_to_rochester_regional_health(mock_info, llm, resume_path="/Users/shawnpana/Documents/GitHub/AGI-House-Web-Agent-Build-Day/backend/mock/test_CV.pdf")
-    print("Search Results:", results.structured_output)
+    print("Search Results:", results)
 
 if __name__ == '__main__':
   asyncio.run(main())
