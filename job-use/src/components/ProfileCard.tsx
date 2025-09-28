@@ -14,7 +14,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ candidate, onEdit }) => {
           <h2 className="text-2xl font-bold text-white">
             {candidate.firstName} {candidate.lastName}
           </h2>
-          <p className="text-lg text-orange-500 font-medium mt-1">
+          <p className="text-lg text-emerald-500 font-medium mt-1">
             {candidate.currentJobTitle}
           </p>
           <p className="text-gray-400">
@@ -24,7 +24,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ candidate, onEdit }) => {
         {onEdit && (
           <button
             onClick={onEdit}
-            className="px-4 py-2 text-sm font-medium text-orange-500 bg-orange-500/10 border border-orange-500/20 rounded-full hover:bg-orange-500/20 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 rounded-full hover:bg-emerald-500/20 transition-colors"
           >
             Edit Profile
           </button>

@@ -112,7 +112,7 @@ const LandingPage: React.FC = () => {
       <div className="w-full max-w-2xl">
         <div className="text-center mb-12">
           <div className="mb-6">
-            <span className="inline-block px-4 py-1 text-xs font-mono tracking-wider text-orange-500 border border-orange-500/30 rounded-full bg-orange-500/10">
+            <span className="inline-block px-4 py-1 text-xs font-mono tracking-wider text-emerald-500 border border-emerald-500/30 rounded-full bg-emerald-500/10">
               [BETA] THE MOST MODERN JOB APPLICATION INFRASTRUCTURE
             </span>
           </div>
@@ -131,7 +131,7 @@ const LandingPage: React.FC = () => {
 
         {isProcessing ? (
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
             <p className="mt-4 text-gray-500 font-mono text-sm">PROCESSING YOUR PROFILE...</p>
           </div>
         ) : (

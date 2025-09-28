@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, Dict, Any
 import sys
@@ -18,6 +19,15 @@ from browser_use import ChatOpenAI
 import json
 
 app = FastAPI(title="Job Application API", version="1.0.0")
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://localhost:5174", "*"],  # Allow frontend origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 class JobApplicationRequest(BaseModel):
     """Request model for job application endpoint"""
@@ -87,7 +97,7 @@ async def apply_rochester_test():
             mock_info = json.load(f)
 
         # Initialize the LLM
-        llm = ChatOpenAI(model="gpt-4o-mini")
+        llm = ChatOpenAI(model="gpt-4.1-mini")
 
         # Call the application function with mock data
         result = await apply_to_rochester_regional_health(

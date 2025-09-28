@@ -80,7 +80,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
           onDrop={handleDrop}
           className={`relative border-2 border-dashed rounded-2xl p-12 text-center transition-all ${
             isDragging
-              ? 'border-orange-500 bg-orange-500/10'
+              ? 'border-emerald-500 bg-emerald-500/10'
               : 'border-gray-800 hover:border-gray-700 bg-gray-950/50'
           }`}
         >
@@ -117,7 +117,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
 
               <label
                 htmlFor="file-upload"
-                className="cursor-pointer inline-flex items-center px-6 py-3 text-sm font-medium text-black bg-orange-500 rounded-full hover:bg-orange-400 transition-all transform hover:scale-105"
+                className="cursor-pointer inline-flex items-center px-6 py-3 text-sm font-medium text-black bg-emerald-500 rounded-full hover:bg-emerald-400 transition-all transform hover:scale-105"
               >
                 Choose file
               </label>
@@ -188,7 +188,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
             <>
               <label
                 htmlFor="file-upload"
-                className="cursor-pointer inline-flex items-center px-6 py-3 text-sm font-medium text-black bg-orange-500 rounded-full hover:bg-orange-400 transition-all transform hover:scale-105"
+                className="cursor-pointer inline-flex items-center px-6 py-3 text-sm font-medium text-black bg-emerald-500 rounded-full hover:bg-emerald-400 transition-all transform hover:scale-105"
               >
                 Choose file
               </label>

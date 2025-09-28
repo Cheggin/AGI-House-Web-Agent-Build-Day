@@ -20,7 +20,8 @@ const Navigation: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center">
+            <Link to="/" className="flex items-center space-x-2">
+              <img src="/job-use-logo.svg" alt="Job Use" className="h-8 w-8" />
               <span className="text-2xl font-bold text-white">Job Use</span>
             </Link>
 
@@ -30,7 +31,7 @@ const Navigation: React.FC = () => {
                   to="/jobs"
                   className={`inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors ${
                     isActive('/jobs')
-                      ? 'text-orange-500 border-b-2 border-orange-500'
+                      ? 'text-emerald-500 border-b-2 border-emerald-500'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
@@ -40,17 +41,27 @@ const Navigation: React.FC = () => {
                   to="/applications"
                   className={`inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors ${
                     isActive('/applications')
-                      ? 'text-orange-500 border-b-2 border-orange-500'
+                      ? 'text-emerald-500 border-b-2 border-emerald-500'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
-                  My Applications
+                  Agent Trace
+                </Link>
+                <Link
+                  to="/research"
+                  className={`inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors ${
+                    isActive('/research')
+                      ? 'text-emerald-500 border-b-2 border-emerald-500'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  Deep Research
                 </Link>
                 <Link
                   to="/profile"
                   className={`inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors ${
                     isActive('/profile')
-                      ? 'text-orange-500 border-b-2 border-orange-500'
+                      ? 'text-emerald-500 border-b-2 border-emerald-500'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
@@ -68,7 +79,7 @@ const Navigation: React.FC = () => {
                 </span>
                 <button
                   onClick={handleLogout}
-                  className="px-5 py-2 text-sm font-medium text-black bg-orange-500 rounded-full hover:bg-orange-400 transition-all transform hover:scale-105"
+                  className="px-5 py-2 text-sm font-medium text-black bg-emerald-500 rounded-full hover:bg-emerald-400 transition-all transform hover:scale-105"
                 >
                   Logout
                 </button>
@@ -76,7 +87,7 @@ const Navigation: React.FC = () => {
             ) : location.pathname !== '/' ? (
               <Link
                 to="/upload"
-                className="px-5 py-2 text-sm font-medium text-black bg-orange-500 rounded-full hover:bg-orange-400 transition-all transform hover:scale-105"
+                className="px-5 py-2 text-sm font-medium text-black bg-emerald-500 rounded-full hover:bg-emerald-400 transition-all transform hover:scale-105"
               >
                 Upload Profile
               </Link>
@@ -113,7 +124,7 @@ const Navigation: React.FC = () => {
               to="/jobs"
               className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
                 isActive('/jobs')
-                  ? 'text-orange-500 bg-gray-900'
+                  ? 'text-emerald-500 bg-gray-900'
                   : 'text-gray-400 hover:text-white hover:bg-gray-900'
               }`}
               onClick={() => setIsMenuOpen(false)}
@@ -124,7 +135,7 @@ const Navigation: React.FC = () => {
               to="/applications"
               className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
                 isActive('/applications')
-                  ? 'text-orange-500 bg-gray-900'
+                  ? 'text-emerald-500 bg-gray-900'
                   : 'text-gray-400 hover:text-white hover:bg-gray-900'
               }`}
               onClick={() => setIsMenuOpen(false)}
@@ -132,10 +143,21 @@ const Navigation: React.FC = () => {
               My Applications
             </Link>
             <Link
+              to="/research"
+              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                isActive('/research')
+                  ? 'text-emerald-500 bg-gray-900'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-900'
+              }`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Deep Research
+            </Link>
+            <Link
               to="/profile"
               className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
                 isActive('/profile')
-                  ? 'text-orange-500 bg-gray-900'
+                  ? 'text-emerald-500 bg-gray-900'
                   : 'text-gray-400 hover:text-white hover:bg-gray-900'
               }`}
               onClick={() => setIsMenuOpen(false)}
