@@ -1,7 +1,7 @@
 import asyncio
 import os
 from dotenv import load_dotenv
-from browser_use import ActionResult, Agent, Browser, ChatOpenAI, Tools
+from browser_use import ActionResult, Agent, Browser, ChatOpenAI, ChatAnthropic, ChatGoogle, Tools
 from browser_use.tools.views import UploadFileAction
 import json
 
@@ -58,9 +58,21 @@ async def apply_to_rochester_regional_health(info: dict, llm: str, resume_path: 
     # file_system = FileSystem(root_dir=fs_root)                    # points to /srv/agent/files
     # available_file_paths = []
 
+    answer_agent = Agent(
+        task=f"Navigate to https://apply.appcast.io/jobs/50590620606/applyboard/apply/ and scroll through the entire application and use extract_structured_data action to extract all the relevant information needed to fill out the job application form. use this information and return a structured output that can be used to fill out the entire form: {info}. Use the done action to finish the task.",
+        llm=llm,
+        browser=browser,
+        tools=tools,
+        # available_file_paths=available_file_paths,
+    )
+
+    answers = await answer_agent.run()
+    print(answers.final_result())
+
     task = f"""
     - Navigate to https://apply.appcast.io/jobs/50590620606/applyboard/apply/
-    - Fill out the job application form with the following information: {info}
+    - Fill out the job application form with the following information: {answers.final_result()}
+        - Before completing every step, refer to this information for accuracy. It is structured in a way to help you fill out the form and is the source of truth.
     - Follow these instructions carefully:
         - Do not skip any fields, even if they are optional. If you do not have the information, make your best guess based on the information provided.
         Fill out the form from top to bottom, never skip a field to come back to it later. When filling out a field, only focus on one field per step. For each of these steps, scroll to the related text. These are the steps:
@@ -69,7 +81,8 @@ async def apply_to_rochester_regional_health(info: dict, llm: str, resume_path: 
                 - "Last name"
                 - "Email"
                 - "Phone number"
-            2) When you reach the resume upload section, use the upload_file_to_element action tool to upload the resume. You are not done yet.
+            2) use the upload_file_to_element action to fill out the following: 
+                - Resume upload field
             3) use input_text action to fill out the following:
                 - "Postal code"
                 - "Country"
@@ -98,7 +111,7 @@ async def apply_to_rochester_regional_health(info: dict, llm: str, resume_path: 
         - You are not done until you have filled out every field of the form.
         - When you have completed the entire form, perform the done action to finish the task.
         - PLACE AN EMPHASIS ON STEP 4, the click_element_by_index action. That section should be filled out.
-
+        - if naything pops up that blocks the form, close it out and continue filling out the form.
     """
 
     available_file_paths = [resume_path]
@@ -113,10 +126,12 @@ async def apply_to_rochester_regional_health(info: dict, llm: str, resume_path: 
 
     history = await agent.run()
 
-    return history.structured_output
+    browser.close()
+
+    return history.final_result()
 
 async def main():
-    llm = ChatOpenAI(model="gpt-4.1-mini")
+    llm = ChatOpenAI(model='gpt-4.1-mini')
 
     # load json into dict from /Users/shawnpana/Documents/GitHub/AGI-House-Web-Agent-Build-Day/backend/mock/test_data.json
     with open('/Users/shawnpana/Documents/GitHub/AGI-House-Web-Agent-Build-Day/backend/mock/test_data.json') as f:
