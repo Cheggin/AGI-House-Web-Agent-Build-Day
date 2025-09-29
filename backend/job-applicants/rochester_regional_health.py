@@ -5,11 +5,7 @@ from browser_use import ActionResult, Agent, Browser, ChatOpenAI, ChatAnthropic,
 from browser_use.tools.views import UploadFileAction
 import json
 
-# from pathlib import Path
-# import shutil
-
-# Load from .env.local file
-load_dotenv('/Users/shawnpana/Documents/GitHub/bu-projects/AGI-House-Web-Agent-Build-Day/backend/.env')
+load_dotenv()
 
 async def apply_to_rochester_regional_health(info: dict, llm: str, resume_path: str):
     """
@@ -36,11 +32,6 @@ async def apply_to_rochester_regional_health(info: dict, llm: str, resume_path: 
     }
     """
 
-    # fs_root = Path("/srv/agent/files")
-    # fs_root.mkdir(parents=True, exist_ok=True)
-
-    # shutil.copy("/Users/shawnpana/Documents/resume.pdf", fs_root / "resume.pdf")
-
     tools = Tools()
 
     @tools.action(description='Upload resume file')
@@ -51,23 +42,7 @@ async def apply_to_rochester_regional_health(info: dict, llm: str, resume_path: 
         return "Ready to upload resume"
 
 
-    browser = Browser(
-        # use_cloud=True,
-        keep_alive=True
-    )
-    # file_system = FileSystem(root_dir=fs_root)                    # points to /srv/agent/files
-    # available_file_paths = []
-
-    # answer_agent = Agent(
-    #     task=f"Navigate to https://apply.appcast.io/jobs/50590620606/applyboard/apply/ and scroll through the entire application and use extract_structured_data action to extract all the relevant information needed to fill out the job application form. use this information and return a structured output that can be used to fill out the entire form: {info}. Use the done action to finish the task.",
-    #     llm=llm,
-    #     browser=browser,
-    #     tools=tools,
-    #     # available_file_paths=available_file_paths,
-    # )
-
-    # answers = await answer_agent.run()
-    # print(answers.final_result())
+    browser = Browser()
 
     task = f"""
     - Navigate to https://apply.appcast.io/jobs/50590620606/applyboard/apply/
@@ -127,8 +102,6 @@ async def apply_to_rochester_regional_health(info: dict, llm: str, resume_path: 
 
     history = await agent.run()
 
-    await browser.stop()
-
     return history.final_result()
 
 async def main():
@@ -136,10 +109,10 @@ async def main():
     llm = ChatAnthropic(model='claude-sonnet-4-5')
 
     # load json into dict from /Users/shawnpana/Documents/GitHub/AGI-House-Web-Agent-Build-Day/backend/mock/test_data.json
-    with open('/Users/shawnpana/Documents/GitHub/AGI-House-Web-Agent-Build-Day/backend/mock/test_data.json') as f:
+    with open('mock/test_data.json') as f:
         mock_info = json.load(f)
 
-    results = await apply_to_rochester_regional_health(mock_info, llm, resume_path="/Users/shawnpana/Documents/GitHub/AGI-House-Web-Agent-Build-Day/backend/mock/test_CV.pdf")
+    results = await apply_to_rochester_regional_health(mock_info, llm, resume_path="mock/test_CV.pdf")
     print("Search Results:", results)
 
 if __name__ == '__main__':

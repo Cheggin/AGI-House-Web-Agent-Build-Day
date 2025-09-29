@@ -2,6 +2,9 @@
 fastapi
 pydantic
 
-# job applicants/rochester_regional_health.py
+# job-applicants/rochester_regional_health.py
 python-dotenv
 browser-use
+
+# deep-research/deep-research.py
+browser-use-sdk

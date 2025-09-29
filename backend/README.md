@@ -1,6 +1,9 @@
 # Job Use Backend
 hey, this is shawn! welcome to the job-use backend...
 
+## setup
+TODO: write setup instructions
+
 ## updates
 
 > ### september 29, 2024
