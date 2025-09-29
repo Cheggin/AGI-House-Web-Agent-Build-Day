@@ -18,6 +18,14 @@ apply_to_rochester_regional_health = rochester_module.apply_to_rochester_regiona
 from browser_use import ChatOpenAI, ChatAnthropic
 import json
 
+# Import deep research function using importlib
+deep_research_module_path = os.path.join(current_dir, 'deep-research', 'deep-research.py')
+deep_research_spec = importlib.util.spec_from_file_location("deep_research", deep_research_module_path)
+deep_research_module = importlib.util.module_from_spec(deep_research_spec)
+deep_research_spec.loader.exec_module(deep_research_module)
+
+research_company = deep_research_module.research_company
+
 app = FastAPI(title="Job Application API", version="1.0.0")
 
 # Configure CORS
@@ -41,49 +49,22 @@ class JobApplicationResponse(BaseModel):
     message: str
     result: Optional[Any] = None
 
-@app.post("/apply/rochester-regional-health", response_model=JobApplicationResponse)
-async def apply_rochester(request: JobApplicationRequest):
-    """
-    Submit a job application to Rochester Regional Health.
+class DeepResearchRequest(BaseModel):
+    """Request model for deep research endpoint"""
+    company_name: str
 
-    Args:
-        request: JobApplicationRequest containing applicant info and resume path
-
-    Returns:
-        JobApplicationResponse with success status and results
-    """
-    try:
-        # Initialize the LLM
-        # llm = ChatOpenAI(model=request.llm_model)
-        llm = ChatAnthropic(model='claude-sonnet-4-5')
-
-        # Call the application function
-        result = await apply_to_rochester_regional_health(
-            info=request.applicant_info,
-            llm=llm,
-            resume_path=request.resume_path
-        )
-
-        return JobApplicationResponse(
-            success=True,
-            message="Application submitted successfully",
-            result=result
-        )
-
-    except FileNotFoundError as e:
-        raise HTTPException(status_code=404, detail=f"Resume file not found: {str(e)}")
-    except Exception as e:
-        return JobApplicationResponse(
-            success=False,
-            message=f"Application failed: {str(e)}",
-            result=None
-        )
+class DeepResearchResponse(BaseModel):
+    """Response model for deep research endpoint"""
+    success: bool
+    message: str
+    data: Optional[Dict[str, str]] = None
 
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "service": "Job Application API"}
 
+# this is the mocked endpoint, the way that i pass llm is not ideal
 @app.post("/apply/rochester-regional-health/test", response_model=JobApplicationResponse)
 async def apply_rochester_test():
     """
@@ -123,6 +104,36 @@ async def apply_rochester_test():
             result=None
         )
 
+@app.post("/deep_research", response_model=DeepResearchResponse)
+async def deep_research_endpoint(request: DeepResearchRequest):
+    """
+    Research a company and provide summary and recommendation.
+
+    Args:
+        request: DeepResearchRequest containing company name
+
+    Returns:
+        DeepResearchResponse with research results
+    """
+    try:
+        # Call the research function
+        result = research_company(request.company_name)
+
+        return DeepResearchResponse(
+            success=True,
+            message=f"Research completed for {request.company_name}",
+            data=result
+        )
+
+    except Exception as e:
+        return DeepResearchResponse(
+            success=False,
+            message=f"Research failed: {str(e)}",
+            data=None
+        )
+
+# TODO: make an endpoint that takes in parameters for any job application
+
 @app.get("/")
 async def root():
     """Root endpoint with API information"""
@@ -130,8 +141,8 @@ async def root():
         "name": "Job Application API",
         "version": "1.0.0",
         "endpoints": {
-            "POST /apply/rochester-regional-health": "Submit job application to Rochester Regional Health",
             "POST /apply/rochester-regional-health/test": "Test endpoint using mock data (no parameters needed)",
+            "POST /deep_research": "Research a company and get summary + recommendation",
             "GET /health": "Health check",
             "GET /docs": "Interactive API documentation"
         }
