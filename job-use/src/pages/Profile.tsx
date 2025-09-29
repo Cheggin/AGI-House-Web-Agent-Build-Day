@@ -10,11 +10,11 @@ const Profile: React.FC = () => {
   const navigate = useNavigate();
 
   const jobExperiences = useQuery(api.jobExperiences.getJobExperiencesByCandidate,
-    user ? { candidateId: user._id } : 'skip'
+    user?._id ? { candidateId: user._id } : 'skip'
   );
 
   const questions = useQuery(api.questions.getQuestionsByCandidate,
-    user ? { candidateId: user._id } : 'skip'
+    user?._id ? { candidateId: user._id } : 'skip'
   );
 
   if (!user) {
