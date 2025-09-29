@@ -9,15 +9,25 @@ const DeepResearch: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [selectedJob, setSelectedJob] = useState<Id<"jobs"> | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showData, setShowData] = useState(false);
 
   const jobs = useQuery(api.jobs.listJobs, {});
   const researchData = useQuery(
     api.research.getDeepResearch,
-    selectedJob ? { jobId: selectedJob } : "skip"
+    selectedJob && showData ? { jobId: selectedJob } : "skip"
   );
 
   const fetchResearch = (jobId: Id<"jobs">) => {
     setSelectedJob(jobId);
+    setIsLoading(true);
+    setShowData(false);
+
+    // Pause for 8 seconds before showing the research data
+    setTimeout(() => {
+      setIsLoading(false);
+      setShowData(true);
+    }, 8000);
   };
 
   if (!user) {
@@ -81,7 +91,7 @@ const DeepResearch: React.FC = () => {
                     </div>
                     {selectedJob === job._id && (
                       <span className="text-xs font-mono text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded">
-                        {researchData === undefined ? 'RESEARCHING...' : 'SELECTED'}
+                        {isLoading ? 'RESEARCHING...' : 'SELECTED'}
                       </span>
                     )}
                   </div>
@@ -101,7 +111,7 @@ const DeepResearch: React.FC = () => {
                   <p className="text-gray-500">Select a job to see AI research insights</p>
                 </div>
               </div>
-            ) : researchData === undefined && selectedJob ? (
+            ) : isLoading ? (
               <div className="flex items-center justify-center h-full min-h-[400px]">
                 <div className="text-center">
                   <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500 mb-4"></div>
@@ -109,7 +119,7 @@ const DeepResearch: React.FC = () => {
                   <p className="text-gray-600 text-xs mt-2">Analyzing company data and web sources</p>
                 </div>
               </div>
-            ) : researchData ? (
+            ) : researchData && showData ? (
               <div className="space-y-6">
                 <div>
                   <h2 className="text-lg font-semibold mb-3 text-emerald-500">Research Results</h2>
@@ -128,29 +138,6 @@ const DeepResearch: React.FC = () => {
                     <p className="text-gray-300 text-sm leading-relaxed">
                       {researchData.Recommendation}
                     </p>
-                  </div>
-
-                  {/* Research Metadata */}
-                  <div className="bg-black/50 border border-gray-900 rounded-lg p-4">
-                    <h3 className="text-xs font-mono text-gray-500 uppercase mb-3">RESEARCH METADATA</h3>
-                    <div className="grid grid-cols-2 gap-4 text-xs">
-                      <div>
-                        <span className="text-gray-600">Sources Analyzed:</span>
-                        <span className="text-gray-400 ml-2">12</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Confidence Score:</span>
-                        <span className="text-emerald-500 ml-2">92%</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Last Updated:</span>
-                        <span className="text-gray-400 ml-2">Just now</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Research Time:</span>
-                        <span className="text-gray-400 ml-2">1.5s</span>
-                      </div>
-                    </div>
                   </div>
 
                   {/* Action Buttons */}
