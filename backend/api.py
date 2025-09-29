@@ -14,7 +14,7 @@ rochester_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(rochester_module)
 
 apply_to_rochester_regional_health = rochester_module.apply_to_rochester_regional_health
-from browser_use import ChatOpenAI
+from browser_use import ChatOpenAI, ChatAnthropic
 import json
 
 app = FastAPI(title="Job Application API", version="1.0.0")
@@ -44,7 +44,8 @@ async def apply_rochester(request: JobApplicationRequest):
     """
     try:
         # Initialize the LLM
-        llm = ChatOpenAI(model=request.llm_model)
+        # llm = ChatOpenAI(model=request.llm_model)
+        llm = ChatAnthropic(model='claude-sonnet-4-5')
 
         # Call the application function
         result = await apply_to_rochester_regional_health(
@@ -87,7 +88,8 @@ async def apply_rochester_test():
             mock_info = json.load(f)
 
         # Initialize the LLM
-        llm = ChatOpenAI(model="o3")
+        # llm = ChatOpenAI(model="o3")
+        llm = ChatAnthropic(model='claude-sonnet-4-5')
 
         # Call the application function with mock data
         result = await apply_to_rochester_regional_health(

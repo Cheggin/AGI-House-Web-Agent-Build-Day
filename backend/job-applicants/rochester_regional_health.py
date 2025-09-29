@@ -127,12 +127,13 @@ async def apply_to_rochester_regional_health(info: dict, llm: str, resume_path: 
 
     history = await agent.run()
 
-    browser.close()
+    await browser.close()
 
     return history.final_result()
 
 async def main():
-    llm = ChatOpenAI(model='gpt-4.1-mini')
+    # llm = ChatOpenAI(model='gpt-4.1-mini')
+    llm = ChatAnthropic(model='claude-sonnet-4-5')
 
     # load json into dict from /Users/shawnpana/Documents/GitHub/AGI-House-Web-Agent-Build-Day/backend/mock/test_data.json
     with open('/Users/shawnpana/Documents/GitHub/AGI-House-Web-Agent-Build-Day/backend/mock/test_data.json') as f:
