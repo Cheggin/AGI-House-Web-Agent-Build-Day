@@ -58,20 +58,20 @@ async def apply_to_rochester_regional_health(info: dict, llm: str, resume_path: 
     # file_system = FileSystem(root_dir=fs_root)                    # points to /srv/agent/files
     # available_file_paths = []
 
-    answer_agent = Agent(
-        task=f"Navigate to https://apply.appcast.io/jobs/50590620606/applyboard/apply/ and scroll through the entire application and use extract_structured_data action to extract all the relevant information needed to fill out the job application form. use this information and return a structured output that can be used to fill out the entire form: {info}. Use the done action to finish the task.",
-        llm=llm,
-        browser=browser,
-        tools=tools,
-        # available_file_paths=available_file_paths,
-    )
+    # answer_agent = Agent(
+    #     task=f"Navigate to https://apply.appcast.io/jobs/50590620606/applyboard/apply/ and scroll through the entire application and use extract_structured_data action to extract all the relevant information needed to fill out the job application form. use this information and return a structured output that can be used to fill out the entire form: {info}. Use the done action to finish the task.",
+    #     llm=llm,
+    #     browser=browser,
+    #     tools=tools,
+    #     # available_file_paths=available_file_paths,
+    # )
 
-    answers = await answer_agent.run()
-    print(answers.final_result())
+    # answers = await answer_agent.run()
+    # print(answers.final_result())
 
     task = f"""
     - Navigate to https://apply.appcast.io/jobs/50590620606/applyboard/apply/
-    - Fill out the job application form with the following information: {answers.final_result()}
+    - Scroll through the entire application and use extract_structured_data action to extract all the relevant information needed to fill out the job application form. use this information and return a structured output that can be used to fill out the entire form: {info}. Use the done action to finish the task. Fill out the job application form with the following information.
         - Before completing every step, refer to this information for accuracy. It is structured in a way to help you fill out the form and is the source of truth.
     - Follow these instructions carefully:
         - Do not skip any fields, even if they are optional. If you do not have the information, make your best guess based on the information provided.
@@ -127,7 +127,7 @@ async def apply_to_rochester_regional_health(info: dict, llm: str, resume_path: 
 
     history = await agent.run()
 
-    await browser.close()
+    await browser.stop()
 
     return history.final_result()
 
