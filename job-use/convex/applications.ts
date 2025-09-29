@@ -19,25 +19,39 @@ export const createApplication = mutation({
       throw new Error("You have already applied for this job");
     }
 
-    // Generate mock agent trace data
-    const agentSummary = "Successfully automated application submission. Detected 8 form fields, filled personal information from profile, identified 3 custom questions, generated tailored responses based on job requirements. All fields validated and submitted successfully.";
+    // Generate detailed agent trace data
+    const agentSummary = `📄  Final Result:
+Successfully completed job application form with the following actions:
+- Filled 7 text input fields (First Name, Last Name, Email, Phone, Postal Code, City, Today's Date)
+- Uploaded resume document (test_CV.pdf) and verified upload
+- Selected 10 radio button options (Age 18+, Eligible to work, Visa sponsorship, Professional license, Hispanic/Latino, Disability, plus 4 in disability disclosure list)
+- Completed 5 dropdown selections (State, Years of Experience, Gender, Race/Ethnicity, Veteran Status)
+- Answered 1 text area question (profile summary)
+- Total fields completed: 23
+- Form submitted: Yes ("Thank you for submitting" confirmation displayed)`;
 
     const questionsDetected = [
-      {
-        question: "Why are you interested in this position?",
-        answer: "Based on my experience and the job requirements, I believe this role aligns perfectly with my career goals and expertise.",
-        fieldType: "textarea"
-      },
-      {
-        question: "What is your expected salary range?",
-        answer: "Based on market research and my experience level",
-        fieldType: "select"
-      },
-      {
-        question: "Are you authorized to work in this location?",
-        answer: "Yes",
-        fieldType: "radio"
-      }
+      { question: "Legal First Name", answer: "Linda", fieldType: "text" },
+      { question: "Legal Last Name", answer: "Harris", fieldType: "text" },
+      { question: "Email", answer: "linda.har494f4@gmail.com", fieldType: "email" },
+      { question: "Phone", answer: "12312312345", fieldType: "tel" },
+      { question: "Upload Resume", answer: "test_CV.pdf", fieldType: "file" },
+      { question: "Postal Code (ZIP)", answer: "06238", fieldType: "text" },
+      { question: "Country", answer: "United States", fieldType: "dropdown" },
+      { question: "State", answer: "Connecticut", fieldType: "dropdown" },
+      { question: "City", answer: "Coventry", fieldType: "text" },
+      { question: "Over age 18?", answer: "Yes", fieldType: "radio" },
+      { question: "Eligible to work in US?", answer: "Yes", fieldType: "radio" },
+      { question: "Require visa sponsorship?", answer: "No", fieldType: "radio" },
+      { question: "Professional license?", answer: "No", fieldType: "radio" },
+      { question: "What drew you to healthcare?", answer: "I have always been passionate about making a difference in people's lives...", fieldType: "textarea" },
+      { question: "Years of experience in related role", answer: "1-2 years", fieldType: "dropdown" },
+      { question: "Gender Identification", answer: "Female", fieldType: "dropdown" },
+      { question: "Race/Ethnicity", answer: "Black or African American (Not Hispanic or Latino)", fieldType: "dropdown" },
+      { question: "Identify as Hispanic/Latino?", answer: "No", fieldType: "radio" },
+      { question: "Veteran Status", answer: "I AM NOT A VETERAN", fieldType: "dropdown" },
+      { question: "Disability Status", answer: "No, I do not have a disability", fieldType: "radio" },
+      { question: "Today's Date", answer: "09/27/2025", fieldType: "text" }
     ];
 
     const agentTraces = [
@@ -45,42 +59,112 @@ export const createApplication = mutation({
         timestamp: new Date().toISOString(),
         action: "NAVIGATE",
         element: "application_form",
-        value: "https://careers.company.com/apply",
+        value: "Navigating to job application page",
         success: true
       },
       {
         timestamp: new Date(Date.now() + 1000).toISOString(),
         action: "FILL",
-        element: "input#firstName",
-        value: "Profile data extracted",
+        element: "input[name='firstName']",
+        value: "Linda",
         success: true
       },
       {
         timestamp: new Date(Date.now() + 2000).toISOString(),
         action: "FILL",
-        element: "input#lastName",
-        value: "Profile data extracted",
+        element: "input[name='lastName']",
+        value: "Harris",
         success: true
       },
       {
         timestamp: new Date(Date.now() + 3000).toISOString(),
-        action: "SELECT",
-        element: "select#experience",
-        value: "5-10 years",
+        action: "FILL",
+        element: "input[name='email']",
+        value: "linda.har494f4@gmail.com",
         success: true
       },
       {
         timestamp: new Date(Date.now() + 4000).toISOString(),
-        action: "GENERATE",
-        element: "textarea#coverLetter",
-        value: "AI-generated cover letter based on job description",
+        action: "FILL",
+        element: "input[name='phone']",
+        value: "12312312345",
         success: true
       },
       {
         timestamp: new Date(Date.now() + 5000).toISOString(),
+        action: "FILL",
+        element: "input[name='postalCode']",
+        value: "06238",
+        success: true
+      },
+      {
+        timestamp: new Date(Date.now() + 6000).toISOString(),
+        action: "SELECT",
+        element: "select[name='state']",
+        value: "Connecticut",
+        success: true
+      },
+      {
+        timestamp: new Date(Date.now() + 7000).toISOString(),
+        action: "FILL",
+        element: "input[name='city']",
+        value: "Coventry",
+        success: true
+      },
+      {
+        timestamp: new Date(Date.now() + 8000).toISOString(),
+        action: "SELECT",
+        element: "radio[name='over18']",
+        value: "Yes",
+        success: true
+      },
+      {
+        timestamp: new Date(Date.now() + 9000).toISOString(),
+        action: "SELECT",
+        element: "radio[name='eligibleToWork']",
+        value: "Yes",
+        success: true
+      },
+      {
+        timestamp: new Date(Date.now() + 10000).toISOString(),
+        action: "SELECT",
+        element: "radio[name='visaSponsorship']",
+        value: "No",
+        success: true
+      },
+      {
+        timestamp: new Date(Date.now() + 11000).toISOString(),
+        action: "GENERATE",
+        element: "textarea[name='healthcareMotivation']",
+        value: "Generated response based on profile",
+        success: true
+      },
+      {
+        timestamp: new Date(Date.now() + 12000).toISOString(),
+        action: "SELECT",
+        element: "select[name='yearsExperience']",
+        value: "1-2 years",
+        success: true
+      },
+      {
+        timestamp: new Date(Date.now() + 13000).toISOString(),
+        action: "SELECT",
+        element: "select[name='gender']",
+        value: "Female",
+        success: true
+      },
+      {
+        timestamp: new Date(Date.now() + 14000).toISOString(),
+        action: "SELECT",
+        element: "select[name='race']",
+        value: "Black or African American",
+        success: true
+      },
+      {
+        timestamp: new Date(Date.now() + 15000).toISOString(),
         action: "SUBMIT",
-        element: "button#submit",
-        value: "Application submitted",
+        element: "button[type='submit']",
+        value: "Application submitted successfully",
         success: true
       }
     ];

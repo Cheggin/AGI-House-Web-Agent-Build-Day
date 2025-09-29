@@ -24,12 +24,30 @@ const JobCard: React.FC<JobCardProps> = ({ job, applied = false }) => {
       return;
     }
 
-    // Check if this is the Rochester Regional Health job
-    if (job.company.includes('Rochester Regional Health')) {
-      setIsApplying(true);
-      showToast('🤖 AI Agent is starting the application process...', 'info');
+    setIsApplying(true);
+    showToast('🤖 AI Agent is starting the application process...', 'info');
 
-      try {
+    try {
+      // Simulate 3-second loading for demo
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+      // Create a record in Convex for tracking (this will generate the detailed agent trace)
+      await createApplication({
+        candidateId: user._id,
+        jobId: job._id,
+        coverLetter: `Applied via Job Use AI Agent to ${job.title} position at ${job.company}.`,
+      });
+
+      showToast('✅ Application submitted successfully!', 'success');
+
+      // Show additional success message after a delay
+      setTimeout(() => {
+        showToast('🎯 AI Agent completed all form fields. Check Agent Trace for details!', 'success');
+      }, 1500);
+
+      /* TEMPORARILY DISABLED FOR DEMO - Uncomment to re-enable API calls
+      // Check if this is the Rochester Regional Health job
+      if (job.company.includes('Rochester Regional Health')) {
         // Call the FastAPI backend - simple POST without body
         const response = await fetch('http://localhost:8000/apply/rochester-regional-health/test', {
           method: 'POST',
@@ -44,34 +62,18 @@ const JobCard: React.FC<JobCardProps> = ({ job, applied = false }) => {
         }
 
         const result = await response.json();
-
-        // Also create a record in Convex for tracking
-        await createApplication({
-          candidateId: user._id,
-          jobId: job._id,
-          coverLetter: `Applied via Job Use AI Agent to ${job.title} position at ${job.company}.`,
-        });
-
-        showToast('✅ Application submitted successfully!', 'success');
-
-        // Show additional success message after a delay
-        setTimeout(() => {
-          showToast('🎯 AI Agent completed all form fields and submitted your application', 'success');
-        }, 2000);
-
-      } catch (error) {
-        console.error('Application error:', error);
-        if (error instanceof Error && error.message.includes('already applied')) {
-          showToast('You have already applied for this position', 'error');
-        } else {
-          showToast('Failed to submit application. Please try again.', 'error');
-        }
-      } finally {
-        setIsApplying(false);
       }
-    } else {
-      // For other jobs, use the existing navigation behavior for now
-      void navigate(`/apply/${job._id}`);
+      */
+
+    } catch (error) {
+      console.error('Application error:', error);
+      if (error instanceof Error && error.message.includes('already applied')) {
+        showToast('You have already applied for this position', 'error');
+      } else {
+        showToast('Failed to submit application. Please try again.', 'error');
+      }
+    } finally {
+      setIsApplying(false);
     }
   };
 
