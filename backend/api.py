@@ -87,7 +87,7 @@ async def apply_rochester_test():
             mock_info = json.load(f)
 
         # Initialize the LLM
-        llm = ChatOpenAI(model="gpt-4o-mini")
+        llm = ChatOpenAI(model="o3")
 
         # Call the application function with mock data
         result = await apply_to_rochester_regional_health(
