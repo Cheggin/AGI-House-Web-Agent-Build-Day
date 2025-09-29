@@ -19,10 +19,79 @@ export const createApplication = mutation({
       throw new Error("You have already applied for this job");
     }
 
+    // Generate mock agent trace data
+    const agentSummary = "Successfully automated application submission. Detected 8 form fields, filled personal information from profile, identified 3 custom questions, generated tailored responses based on job requirements. All fields validated and submitted successfully.";
+
+    const questionsDetected = [
+      {
+        question: "Why are you interested in this position?",
+        answer: "Based on my experience and the job requirements, I believe this role aligns perfectly with my career goals and expertise.",
+        fieldType: "textarea"
+      },
+      {
+        question: "What is your expected salary range?",
+        answer: "Based on market research and my experience level",
+        fieldType: "select"
+      },
+      {
+        question: "Are you authorized to work in this location?",
+        answer: "Yes",
+        fieldType: "radio"
+      }
+    ];
+
+    const agentTraces = [
+      {
+        timestamp: new Date().toISOString(),
+        action: "NAVIGATE",
+        element: "application_form",
+        value: "https://careers.company.com/apply",
+        success: true
+      },
+      {
+        timestamp: new Date(Date.now() + 1000).toISOString(),
+        action: "FILL",
+        element: "input#firstName",
+        value: "Profile data extracted",
+        success: true
+      },
+      {
+        timestamp: new Date(Date.now() + 2000).toISOString(),
+        action: "FILL",
+        element: "input#lastName",
+        value: "Profile data extracted",
+        success: true
+      },
+      {
+        timestamp: new Date(Date.now() + 3000).toISOString(),
+        action: "SELECT",
+        element: "select#experience",
+        value: "5-10 years",
+        success: true
+      },
+      {
+        timestamp: new Date(Date.now() + 4000).toISOString(),
+        action: "GENERATE",
+        element: "textarea#coverLetter",
+        value: "AI-generated cover letter based on job description",
+        success: true
+      },
+      {
+        timestamp: new Date(Date.now() + 5000).toISOString(),
+        action: "SUBMIT",
+        element: "button#submit",
+        value: "Application submitted",
+        success: true
+      }
+    ];
+
     return await ctx.db.insert("applications", {
       ...args,
       appliedDate: new Date().toISOString(),
       status: "pending",
+      agentSummary,
+      questionsDetected,
+      agentTraces,
     });
   },
 });
@@ -52,6 +121,19 @@ export const listApplications = query({
         v.literal("rejected")
       ),
       coverLetter: v.optional(v.string()),
+      agentSummary: v.optional(v.string()),
+      questionsDetected: v.optional(v.array(v.object({
+        question: v.string(),
+        answer: v.string(),
+        fieldType: v.string(),
+      }))),
+      agentTraces: v.optional(v.array(v.object({
+        timestamp: v.string(),
+        action: v.string(),
+        element: v.string(),
+        value: v.optional(v.string()),
+        success: v.boolean(),
+      }))),
     })
   ),
   handler: async (ctx, args) => {

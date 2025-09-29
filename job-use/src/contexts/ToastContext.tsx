@@ -42,11 +42,11 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
   const getToastStyles = (type: Toast['type']) => {
     switch (type) {
       case 'success':
-        return 'bg-green-50 border-green-200 text-green-800';
+        return 'bg-gray-950 border-emerald-500/30 text-emerald-500';
       case 'error':
-        return 'bg-red-50 border-red-200 text-red-800';
+        return 'bg-gray-950 border-red-500/30 text-red-500';
       default:
-        return 'bg-blue-50 border-blue-200 text-blue-800';
+        return 'bg-gray-950 border-gray-700 text-gray-300';
     }
   };
 
@@ -54,7 +54,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
     switch (type) {
       case 'success':
         return (
-          <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         );
@@ -66,7 +66,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
         );
       default:
         return (
-          <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         );

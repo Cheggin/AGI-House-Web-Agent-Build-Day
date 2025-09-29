@@ -66,6 +66,19 @@ export default defineSchema({
       v.literal("rejected")
     ),
     coverLetter: v.optional(v.string()),
+    agentSummary: v.optional(v.string()),
+    questionsDetected: v.optional(v.array(v.object({
+      question: v.string(),
+      answer: v.string(),
+      fieldType: v.string(),
+    }))),
+    agentTraces: v.optional(v.array(v.object({
+      timestamp: v.string(),
+      action: v.string(),
+      element: v.string(),
+      value: v.optional(v.string()),
+      success: v.boolean(),
+    }))),
   })
     .index("by_candidate", ["candidateId"])
     .index("by_job", ["jobId"])

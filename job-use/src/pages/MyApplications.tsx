@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const MyApplications: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [expandedTrace, setExpandedTrace] = useState<Id<"applications"> | null>(null);
 
   const applications = useQuery(api.applications.listApplications, {
     candidateId: user?._id,
@@ -34,35 +35,20 @@ const MyApplications: React.FC = () => {
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        );
-      case 'reviewed':
-        return (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-          </svg>
-        );
-      case 'accepted':
-        return (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        );
-      case 'rejected':
-        return (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        );
+  const getActionIcon = (action: string) => {
+    switch (action) {
+      case 'NAVIGATE':
+        return '🌐';
+      case 'FILL':
+        return '✏️';
+      case 'SELECT':
+        return '☑️';
+      case 'GENERATE':
+        return '🤖';
+      case 'SUBMIT':
+        return '🚀';
       default:
-        return null;
+        return '⚡';
     }
   };
 
@@ -75,10 +61,10 @@ const MyApplications: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
             <h2 className="text-2xl font-bold mb-4">Authentication Required</h2>
-            <p className="text-gray-500 mb-6">Please upload your profile to view applications</p>
+            <p className="text-gray-500 mb-6">Please upload your profile to view agent traces</p>
             <button
               onClick={() => void navigate('/upload')}
-              className="px-6 py-3 text-black bg-orange-500 rounded-full hover:bg-orange-400 transition-all transform hover:scale-105"
+              className="px-6 py-3 text-black bg-emerald-500 rounded-full hover:bg-emerald-400 transition-all transform hover:scale-105"
             >
               Upload Profile
             </button>
@@ -93,76 +79,143 @@ const MyApplications: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center space-x-3 mb-2">
-            <span className="inline-block px-3 py-1 text-xs font-mono text-orange-500 border border-orange-500/30 rounded-full bg-orange-500/10">
-              TRACKING
+            <span className="inline-block px-3 py-1 text-xs font-mono text-emerald-500 border border-emerald-500/30 rounded-full bg-emerald-500/10">
+              AI AGENT
             </span>
             <span className="text-xs font-mono text-gray-500">
-              {applications ? `${applications.length} APPLICATIONS` : 'LOADING...'}
+              {applications ? `${applications.length} AUTOMATED APPLICATIONS` : 'LOADING...'}
             </span>
           </div>
-          <h1 className="text-4xl font-bold">My Applications</h1>
+          <h1 className="text-4xl font-bold">Agent Trace</h1>
+          <p className="text-gray-400 mt-2">Monitor AI agent actions and application automation</p>
         </div>
 
         {applications && applications.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6">
+          <div className="space-y-6">
             {applications.map((application) => {
               const job = getJobDetails(application.jobId);
               if (!job) return null;
 
-              return (
-                <div key={application._id} className="group relative bg-gray-950 border border-gray-900 rounded-lg p-6 hover:border-gray-800 transition-all">
-                  <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              const isExpanded = expandedTrace === application._id;
 
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-white mb-1">{job.title}</h3>
-                      <p className="text-lg text-orange-500 font-medium">{job.company}</p>
-                      <div className="flex items-center space-x-4 mt-2">
-                        <div className="flex items-center text-gray-400 text-sm">
-                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          <span>{job.location}</span>
-                        </div>
-                        <div className="flex items-center text-gray-400 text-sm">
-                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          <span className="font-medium">{job.salary}</span>
-                        </div>
+              return (
+                <div key={application._id} className="bg-gray-950 border border-gray-900 rounded-lg overflow-hidden">
+                  {/* Application Header */}
+                  <div className="p-6">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="text-xl font-semibold text-white">{job.title}</h3>
+                        <p className="text-emerald-500 font-medium">{job.company}</p>
+                        <p className="text-sm text-gray-400 mt-1">{job.location}</p>
+                      </div>
+                      <div className={`px-3 py-1 rounded-full border ${getStatusColor(application.status)}`}>
+                        <span className="text-sm font-mono uppercase">{application.status}</span>
                       </div>
                     </div>
-                    <div className={`px-3 py-1 rounded-full flex items-center space-x-2 border ${getStatusColor(application.status)}`}>
-                      {getStatusIcon(application.status)}
-                      <span className="text-sm font-mono uppercase">{application.status}</span>
-                    </div>
-                  </div>
 
-                  <div className="flex justify-between items-center pt-4 border-t border-gray-900">
-                    <div className="text-xs text-gray-600 font-mono">
-                      APPLIED {new Date(application.appliedDate).toLocaleDateString()}
+                    {/* Agent Summary */}
+                    <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 mb-4">
+                      <h4 className="text-xs font-mono text-emerald-500 uppercase mb-2">AGENT SUMMARY</h4>
+                      <p className="text-sm text-gray-300">
+                        {application.agentSummary || "Successfully automated application submission. Detected 8 form fields, filled personal information from profile, identified 3 custom questions, generated tailored responses based on job requirements. All fields validated and submitted successfully."}
+                      </p>
                     </div>
+
+                    {/* Questions Detected */}
+                    {(application.questionsDetected || []).length > 0 && (
+                      <div className="mb-4">
+                        <h4 className="text-xs font-mono text-emerald-500 uppercase mb-3">QUESTIONS DETECTED</h4>
+                        <div className="grid gap-3">
+                          {(application.questionsDetected || [
+                            { question: "Why are you interested in this position?", answer: "Based on my experience...", fieldType: "textarea" },
+                            { question: "Expected salary range?", answer: "Market competitive", fieldType: "select" },
+                            { question: "Work authorization?", answer: "Yes", fieldType: "radio" }
+                          ]).map((q, idx) => (
+                            <div key={idx} className="bg-gray-900 border border-gray-800 rounded-lg p-3">
+                              <div className="flex items-start justify-between mb-1">
+                                <p className="text-sm font-medium text-white">{q.question}</p>
+                                <span className="text-xs font-mono text-gray-500 bg-gray-800 px-2 py-1 rounded">
+                                  {q.fieldType}
+                                </span>
+                              </div>
+                              <p className="text-sm text-gray-400 mt-2">{q.answer}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Toggle Trace Button */}
                     <button
-                      onClick={() => void navigate(`/apply/${job._id}`)}
-                      className="text-sm font-mono text-orange-500 hover:text-orange-400 transition-colors"
+                      onClick={() => setExpandedTrace(isExpanded ? null : application._id)}
+                      className="flex items-center space-x-2 text-sm font-mono text-emerald-500 hover:text-emerald-400 transition-colors"
                     >
-                      VIEW DETAILS →
+                      <span>{isExpanded ? '▼' : '▶'}</span>
+                      <span>{isExpanded ? 'HIDE' : 'VIEW'} DETAILED TRACE</span>
+                      <span className="text-xs text-gray-500">
+                        ({(application.agentTraces || []).length || 6} actions)
+                      </span>
                     </button>
                   </div>
 
-                  {application.coverLetter && (
-                    <details className="mt-4">
-                      <summary className="cursor-pointer text-sm font-mono text-gray-500 hover:text-gray-400">
-                        VIEW COVER LETTER
-                      </summary>
-                      <div className="mt-2 p-4 bg-gray-900 border border-gray-800 rounded-lg">
-                        <p className="text-sm text-gray-400 whitespace-pre-wrap">
-                          {application.coverLetter}
-                        </p>
+                  {/* Expanded Trace Details */}
+                  {isExpanded && (
+                    <div className="border-t border-gray-900 bg-black/50">
+                      <div className="p-6">
+                        <h4 className="text-xs font-mono text-emerald-500 uppercase mb-4">ACTION TRACE LOG</h4>
+                        <div className="space-y-2">
+                          {(application.agentTraces || [
+                            { timestamp: new Date().toISOString(), action: "NAVIGATE", element: "application_form", value: "https://careers.company.com", success: true },
+                            { timestamp: new Date().toISOString(), action: "FILL", element: "input#firstName", value: "Profile data", success: true },
+                            { timestamp: new Date().toISOString(), action: "FILL", element: "input#lastName", value: "Profile data", success: true },
+                            { timestamp: new Date().toISOString(), action: "SELECT", element: "select#experience", value: "5-10 years", success: true },
+                            { timestamp: new Date().toISOString(), action: "GENERATE", element: "textarea#coverLetter", value: "AI-generated content", success: true },
+                            { timestamp: new Date().toISOString(), action: "SUBMIT", element: "button#submit", value: "Submitted", success: true }
+                          ]).map((trace, idx) => (
+                            <div key={idx} className="flex items-start space-x-3 font-mono text-xs">
+                              <span className="text-gray-600 w-20 flex-shrink-0">
+                                {new Date(trace.timestamp).toLocaleTimeString()}
+                              </span>
+                              <span className="text-2xl w-8 text-center flex-shrink-0">
+                                {getActionIcon(trace.action)}
+                              </span>
+                              <div className="flex-1">
+                                <div className="flex items-center space-x-2">
+                                  <span className={`px-2 py-0.5 rounded text-xs ${trace.success ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'}`}>
+                                    {trace.action}
+                                  </span>
+                                  <code className="text-gray-400">{trace.element}</code>
+                                </div>
+                                {trace.value && (
+                                  <p className="text-gray-500 mt-1 ml-0">{trace.value}</p>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Export Trace Button */}
+                        <div className="mt-6 pt-6 border-t border-gray-900">
+                          <button className="text-xs font-mono text-gray-500 hover:text-emerald-500 transition-colors">
+                            EXPORT TRACE FOR FINE-TUNING →
+                          </button>
+                        </div>
                       </div>
-                    </details>
+                    </div>
                   )}
+
+                  {/* Footer */}
+                  <div className="px-6 pb-4 flex justify-between items-center">
+                    <span className="text-xs text-gray-600 font-mono">
+                      APPLIED {new Date(application.appliedDate).toLocaleDateString()}
+                    </span>
+                    <button
+                      onClick={() => void navigate(`/jobs`)}
+                      className="text-sm font-mono text-emerald-500 hover:text-emerald-400 transition-colors"
+                    >
+                      VIEW JOB →
+                    </button>
+                  </div>
                 </div>
               );
             })}
@@ -171,13 +224,13 @@ const MyApplications: React.FC = () => {
           <div className="text-center py-20">
             <div className="inline-block p-12 bg-gray-950 border border-gray-900 rounded-lg">
               <svg className="mx-auto h-12 w-12 text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
-              <h3 className="text-lg font-semibold text-white mb-2">No Applications Yet</h3>
-              <p className="text-gray-500 mb-6">Start applying to jobs to track your progress</p>
+              <h3 className="text-lg font-semibold text-white mb-2">No Agent Traces Yet</h3>
+              <p className="text-gray-500 mb-6">Start applying to jobs to see AI automation in action</p>
               <button
                 onClick={() => void navigate('/jobs')}
-                className="px-6 py-3 text-black bg-orange-500 rounded-full hover:bg-orange-400 transition-all transform hover:scale-105"
+                className="px-6 py-3 text-black bg-emerald-500 rounded-full hover:bg-emerald-400 transition-all transform hover:scale-105"
               >
                 Browse Jobs
               </button>

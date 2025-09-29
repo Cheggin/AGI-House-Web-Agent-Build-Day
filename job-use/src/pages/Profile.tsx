@@ -29,7 +29,7 @@ const Profile: React.FC = () => {
             <p className="text-gray-500 mb-6">Please upload your profile to get started</p>
             <button
               onClick={() => void navigate('/upload')}
-              className="px-6 py-3 text-black bg-orange-500 rounded-full hover:bg-orange-400 transition-all transform hover:scale-105"
+              className="px-6 py-3 text-black bg-emerald-500 rounded-full hover:bg-emerald-400 transition-all transform hover:scale-105"
             >
               Upload Profile
             </button>
@@ -44,7 +44,7 @@ const Profile: React.FC = () => {
       <div className="max-w-6xl mx-auto">
         <div className="mb-6">
           <div className="flex items-center space-x-3 mb-2">
-            <span className="inline-block px-3 py-1 text-xs font-mono text-orange-500 border border-orange-500/30 rounded-full bg-orange-500/10">
+            <span className="inline-block px-3 py-1 text-xs font-mono text-emerald-500 border border-emerald-500/30 rounded-full bg-emerald-500/10">
               PROFILE
             </span>
             <span className="text-xs font-mono text-gray-500">
@@ -67,11 +67,11 @@ const Profile: React.FC = () => {
                 </h2>
                 <div className="space-y-4">
                   {jobExperiences.map((exp) => (
-                    <div key={exp._id} className="border-l-2 border-orange-500/30 pl-4">
+                    <div key={exp._id} className="border-l-2 border-emerald-500/30 pl-4">
                       <div className="flex justify-between items-start mb-2">
                         <div>
                           <h3 className="text-lg font-semibold text-white">{exp.title}</h3>
-                          <p className="text-orange-500 font-medium">{exp.company}</p>
+                          <p className="text-emerald-500 font-medium">{exp.company}</p>
                         </div>
                         {exp.currentJob && (
                           <span className="px-2 py-1 text-xs font-mono text-green-400 bg-green-400/10 border border-green-400/20 rounded-full">
@@ -101,7 +101,7 @@ const Profile: React.FC = () => {
                 <div className="space-y-4 overflow-y-auto pr-2" style={{ maxHeight: 'calc(100vh - 300px)' }}>
                   {questions.map((q) => (
                     <div key={q._id} className="pb-3 border-b border-gray-800 last:border-0">
-                      <p className="text-xs font-mono text-orange-500 mb-1">{q.intent || q.questionType}</p>
+                      <p className="text-xs font-mono text-emerald-500 mb-1">{q.intent || q.questionType}</p>
                       <p className="text-sm text-white font-medium mb-2">{q.name}</p>
                       <p className="text-sm text-gray-400">{q.answer}</p>
                       {q.answered && (

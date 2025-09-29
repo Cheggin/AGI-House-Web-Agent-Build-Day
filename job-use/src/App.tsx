@@ -9,6 +9,7 @@ import JobsDashboard from './pages/JobsDashboard';
 import ApplicationPage from './pages/ApplicationPage';
 import MyApplications from './pages/MyApplications';
 import Profile from './pages/Profile';
+import DeepResearch from './pages/DeepResearch';
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
               <Route path="/jobs" element={<JobsDashboard />} />
               <Route path="/apply/:jobId" element={<ApplicationPage />} />
               <Route path="/applications" element={<MyApplications />} />
+              <Route path="/research" element={<DeepResearch />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
