@@ -1,3 +1,7 @@
+# api.py
 fastapi
+pydantic
+
+# job applicants/rochester_regional_health.py
 python-dotenv
 browser-use
