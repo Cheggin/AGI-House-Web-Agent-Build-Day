@@ -53,10 +53,9 @@ export const getResearchHistory = query({
     researchDate: v.string(),
     summary: v.string(),
   })),
-  handler: async (_ctx, args) => {
+  handler: async (_ctx, _args) => {
     // Mock implementation - return empty array for now
     // In a real implementation, you would store research history in the database
-    const limit = args.limit || 10;
 
     // Return empty array as placeholder
     return [];

@@ -4,11 +4,11 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 interface Toast {
   id: string;
   message: string;
-  type: 'success' | 'error' | 'info';
+  type: 'success' | 'error' | 'info' | 'warning';
 }
 
 interface ToastContextType {
-  showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
+  showToast: (message: string, type?: 'success' | 'error' | 'info' | 'warning') => void;
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -28,7 +28,7 @@ interface ToastProviderProps {
 export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+  const showToast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') => {
     const id = Date.now().toString();
     const newToast: Toast = { id, message, type };
 
@@ -45,6 +45,8 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
         return 'bg-gray-950 border-emerald-500/30 text-emerald-500';
       case 'error':
         return 'bg-gray-950 border-red-500/30 text-red-500';
+      case 'warning':
+        return 'bg-gray-950 border-yellow-500/30 text-yellow-500';
       default:
         return 'bg-gray-950 border-gray-700 text-gray-300';
     }
@@ -62,6 +64,12 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
         return (
           <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        );
+      case 'warning':
+        return (
+          <svg className="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
         );
       default:

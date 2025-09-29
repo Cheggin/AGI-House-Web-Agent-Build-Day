@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -12,14 +11,13 @@ interface JobCardProps {
 }
 
 const JobCard: React.FC<JobCardProps> = ({ job, applied = false }) => {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const { showToast } = useToast();
   const [isApplying, setIsApplying] = useState(false);
   const createApplication = useMutation(api.applications.createApplication);
 
   const handleApply = async () => {
-    if (!user) {
+    if (!user || !user._id) {
       showToast('Please upload your profile first', 'error');
       return;
     }
@@ -139,7 +137,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, applied = false }) => {
           </span>
         ) : (
           <button
-            onClick={handleApply}
+            onClick={() => void handleApply()}
             className="px-5 py-2 text-sm font-medium text-black bg-emerald-500 rounded-full hover:bg-emerald-400 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             disabled={job.status !== 'active' || isApplying}
           >
