@@ -1,0 +1,46 @@
+name: Frontend CI
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'job-use/**'
+      - '.github/workflows/frontend-ci.yml'
+  push:
+    branches: [ main ]
+    paths:
+      - 'job-use/**'
+
+jobs:
+  lint-and-build:
+    name: Lint and Build Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: job-use/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./job-use
+        run: npm ci
+
+      - name: Run ESLint
+        working-directory: ./job-use
+        run: npm run lint
+
+      - name: Build project
+        working-directory: ./job-use
+        run: npm run build
+        env:
+          VITE_CONVEX_URL: ${{ secrets.VITE_CONVEX_URL || 'https://dummy-url.convex.cloud' }}
+
+      - name: Check for TypeScript errors
+        working-directory: ./job-use
+        run: npx tsc --noEmit
