@@ -15,7 +15,7 @@ rochester_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(rochester_module)
 
 apply_to_rochester_regional_health = rochester_module.apply_to_rochester_regional_health
-from browser_use import ChatOpenAI, ChatAnthropic
+from browser_use import ChatOpenAI, ChatAnthropic, ChatGoogle
 import json
 
 # Import deep research function using importlib
@@ -80,7 +80,8 @@ async def apply_rochester_test():
 
         # Initialize the LLM
         # llm = ChatOpenAI(model="o3")
-        llm = ChatAnthropic(model='claude-sonnet-4-5')
+        # llm = ChatAnthropic(model='claude-sonnet-4-5')
+        llm = ChatGoogle(model='gemini-flash-latest', api_key=os.getenv("GOOGLE-API-KEY"))
 
         # Call the application function with mock data
         result = await apply_to_rochester_regional_health(

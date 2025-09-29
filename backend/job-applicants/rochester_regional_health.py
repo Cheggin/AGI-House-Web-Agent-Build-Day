@@ -106,7 +106,8 @@ async def apply_to_rochester_regional_health(info: dict, llm: str, resume_path: 
 
 async def main():
     # llm = ChatOpenAI(model='gpt-4.1-mini')
-    llm = ChatAnthropic(model='claude-sonnet-4-5')
+    # llm = ChatAnthropic(model='claude-sonnet-4-5')
+    llm = ChatGoogle(model='gemini-flash-latest')
 
     # load json into dict from /Users/shawnpana/Documents/GitHub/AGI-House-Web-Agent-Build-Day/backend/mock/test_data.json
     with open('mock/test_data.json') as f:
