@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 const MyApplications: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [expandedTrace, setExpandedTrace] = useState<Id<"applications"> | null>(null);
 
   const applications = useQuery(api.applications.listApplications, {
     candidateId: user?._id,
@@ -35,22 +34,6 @@ const MyApplications: React.FC = () => {
     }
   };
 
-  const getActionIcon = (action: string) => {
-    switch (action) {
-      case 'NAVIGATE':
-        return '🌐';
-      case 'FILL':
-        return '✏️';
-      case 'SELECT':
-        return '☑️';
-      case 'GENERATE':
-        return '🤖';
-      case 'SUBMIT':
-        return '🚀';
-      default:
-        return '⚡';
-    }
-  };
 
   if (!user) {
     return (
@@ -96,8 +79,6 @@ const MyApplications: React.FC = () => {
               const job = getJobDetails(application.jobId);
               if (!job) return null;
 
-              const isExpanded = expandedTrace === application._id;
-
               return (
                 <div key={application._id} className="bg-gray-950 border border-gray-900 rounded-lg overflow-hidden">
                   {/* Application Header */}
@@ -114,95 +95,15 @@ const MyApplications: React.FC = () => {
                     </div>
 
                     {/* Agent Summary */}
-                    <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 mb-4">
-                      <h4 className="text-xs font-mono text-emerald-500 uppercase mb-2">AGENT SUMMARY</h4>
-                      <p className="text-sm text-gray-300">
-                        {application.agentSummary || "Successfully automated application submission. Detected 8 form fields, filled personal information from profile, identified 3 custom questions, generated tailored responses based on job requirements. All fields validated and submitted successfully."}
-                      </p>
-                    </div>
-
-                    {/* Questions Detected */}
-                    {(application.questionsDetected || []).length > 0 && (
-                      <div className="mb-4">
-                        <h4 className="text-xs font-mono text-emerald-500 uppercase mb-3">QUESTIONS DETECTED</h4>
-                        <div className="grid gap-3">
-                          {(application.questionsDetected || [
-                            { question: "Why are you interested in this position?", answer: "Based on my experience...", fieldType: "textarea" },
-                            { question: "Expected salary range?", answer: "Market competitive", fieldType: "select" },
-                            { question: "Work authorization?", answer: "Yes", fieldType: "radio" }
-                          ]).map((q, idx) => (
-                            <div key={idx} className="bg-gray-900 border border-gray-800 rounded-lg p-3">
-                              <div className="flex items-start justify-between mb-1">
-                                <p className="text-sm font-medium text-white">{q.question}</p>
-                                <span className="text-xs font-mono text-gray-500 bg-gray-800 px-2 py-1 rounded">
-                                  {q.fieldType}
-                                </span>
-                              </div>
-                              <p className="text-sm text-gray-400 mt-2">{q.answer}</p>
-                            </div>
-                          ))}
+                    {application.agentSummary && (
+                      <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
+                        <h4 className="text-xs font-mono text-emerald-500 uppercase mb-2">AGENT SUMMARY</h4>
+                        <div className="text-sm text-gray-300 whitespace-pre-wrap break-words font-mono">
+                          {application.agentSummary}
                         </div>
                       </div>
                     )}
-
-                    {/* Toggle Trace Button */}
-                    <button
-                      onClick={() => setExpandedTrace(isExpanded ? null : application._id)}
-                      className="flex items-center space-x-2 text-sm font-mono text-emerald-500 hover:text-emerald-400 transition-colors"
-                    >
-                      <span>{isExpanded ? '▼' : '▶'}</span>
-                      <span>{isExpanded ? 'HIDE' : 'VIEW'} DETAILED TRACE</span>
-                      <span className="text-xs text-gray-500">
-                        ({(application.agentTraces || []).length || 6} actions)
-                      </span>
-                    </button>
                   </div>
-
-                  {/* Expanded Trace Details */}
-                  {isExpanded && (
-                    <div className="border-t border-gray-900 bg-black/50">
-                      <div className="p-6">
-                        <h4 className="text-xs font-mono text-emerald-500 uppercase mb-4">ACTION TRACE LOG</h4>
-                        <div className="space-y-2">
-                          {(application.agentTraces || [
-                            { timestamp: new Date().toISOString(), action: "NAVIGATE", element: "application_form", value: "https://careers.company.com", success: true },
-                            { timestamp: new Date().toISOString(), action: "FILL", element: "input#firstName", value: "Profile data", success: true },
-                            { timestamp: new Date().toISOString(), action: "FILL", element: "input#lastName", value: "Profile data", success: true },
-                            { timestamp: new Date().toISOString(), action: "SELECT", element: "select#experience", value: "5-10 years", success: true },
-                            { timestamp: new Date().toISOString(), action: "GENERATE", element: "textarea#coverLetter", value: "AI-generated content", success: true },
-                            { timestamp: new Date().toISOString(), action: "SUBMIT", element: "button#submit", value: "Submitted", success: true }
-                          ]).map((trace, idx) => (
-                            <div key={idx} className="flex items-start space-x-3 font-mono text-xs">
-                              <span className="text-gray-600 w-20 flex-shrink-0">
-                                {new Date(trace.timestamp).toLocaleTimeString()}
-                              </span>
-                              <span className="text-2xl w-8 text-center flex-shrink-0">
-                                {getActionIcon(trace.action)}
-                              </span>
-                              <div className="flex-1">
-                                <div className="flex items-center space-x-2">
-                                  <span className={`px-2 py-0.5 rounded text-xs ${trace.success ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'}`}>
-                                    {trace.action}
-                                  </span>
-                                  <code className="text-gray-400">{trace.element}</code>
-                                </div>
-                                {trace.value && (
-                                  <p className="text-gray-500 mt-1 ml-0">{trace.value}</p>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* Export Trace Button */}
-                        <div className="mt-6 pt-6 border-t border-gray-900">
-                          <button className="text-xs font-mono text-gray-500 hover:text-emerald-500 transition-colors">
-                            EXPORT TRACE FOR FINE-TUNING →
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
 
                   {/* Footer */}
                   <div className="px-6 pb-4 flex justify-between items-center">

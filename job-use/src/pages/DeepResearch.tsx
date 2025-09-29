@@ -2,32 +2,70 @@ import React, { useState } from 'react';
 import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../contexts/ToastContext';
 import { Id } from '../../convex/_generated/dataModel';
 import { useNavigate } from 'react-router-dom';
+
+interface ResearchData {
+  summary: string;
+  recommendation: string;
+}
 
 const DeepResearch: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [selectedJob, setSelectedJob] = useState<Id<"jobs"> | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [showData, setShowData] = useState(false);
+  const [researchData, setResearchData] = useState<ResearchData | null>(null);
 
   const jobs = useQuery(api.jobs.listJobs, {});
-  const researchData = useQuery(
-    api.research.getDeepResearch,
-    selectedJob && showData ? { jobId: selectedJob } : "skip"
-  );
 
-  const fetchResearch = (jobId: Id<"jobs">) => {
+  const fetchResearch = async (jobId: Id<"jobs">) => {
+    const job = jobs?.find(j => j._id === jobId);
+    if (!job) return;
+
     setSelectedJob(jobId);
     setIsLoading(true);
-    setShowData(false);
+    setResearchData(null);
 
-    // Pause for 8 seconds before showing the research data
-    setTimeout(() => {
+    try {
+      showToast('🔍 AI Agent starting deep research...', 'info');
+
+      const response = await fetch('http://localhost:8000/deep_research', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ company_name: job.company }),
+        mode: 'cors',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const response_data = await response.json();
+      console.log('API Response:', response_data);
+
+      // Check if response has the expected structure
+      if (response_data && response_data.data && response_data.data.summary && response_data.data.recommendation) {
+        setResearchData({
+          summary: response_data.data.summary,
+          recommendation: response_data.data.recommendation,
+        });
+        showToast('✅ Research completed successfully!', 'success');
+      } else {
+        console.error('Invalid API response structure:', response_data);
+        throw new Error(`Invalid response format from API. Received: ${JSON.stringify(response_data)}`);
+      }
+    } catch (error) {
+      console.error('Research error:', error);
+      showToast('⚠️ Could not connect to research API. Please ensure backend is running.', 'error');
+      setResearchData(null);
+    } finally {
       setIsLoading(false);
-      setShowData(true);
-    }, 8000);
+    }
   };
 
   if (!user) {
@@ -76,8 +114,9 @@ const DeepResearch: React.FC = () => {
               {jobs?.map((job) => (
                 <button
                   key={job._id}
-                  onClick={() => fetchResearch(job._id)}
-                  className={`w-full text-left p-4 rounded-lg border transition-all ${
+                  onClick={() => void fetchResearch(job._id)}
+                  disabled={isLoading}
+                  className={`w-full text-left p-4 rounded-lg border transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
                     selectedJob === job._id
                       ? 'bg-emerald-500/10 border-emerald-500/30'
                       : 'bg-gray-900 border-gray-800 hover:border-gray-700'
@@ -119,7 +158,7 @@ const DeepResearch: React.FC = () => {
                   <p className="text-gray-600 text-xs mt-2">Analyzing company data and web sources</p>
                 </div>
               </div>
-            ) : researchData && showData ? (
+            ) : researchData ? (
               <div className="space-y-6">
                 <div>
                   <h2 className="text-lg font-semibold mb-3 text-emerald-500">Research Results</h2>
@@ -128,7 +167,7 @@ const DeepResearch: React.FC = () => {
                   <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 mb-4">
                     <h3 className="text-xs font-mono text-emerald-500 uppercase mb-3">COMPANY OVERVIEW</h3>
                     <p className="text-gray-300 text-sm leading-relaxed">
-                      {researchData.Summary}
+                      {researchData.summary}
                     </p>
                   </div>
 
@@ -136,12 +175,12 @@ const DeepResearch: React.FC = () => {
                   <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 mb-4">
                     <h3 className="text-xs font-mono text-emerald-500 uppercase mb-3">AI RECOMMENDATION</h3>
                     <p className="text-gray-300 text-sm leading-relaxed">
-                      {researchData.Recommendation}
+                      {researchData.recommendation}
                     </p>
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex space-x-3 mt-6">
+                  <div className="mt-6">
                     <button
                       onClick={() => {
                         const job = jobs?.find(j => j._id === selectedJob);
@@ -149,12 +188,9 @@ const DeepResearch: React.FC = () => {
                           void navigate('/jobs');
                         }
                       }}
-                      className="flex-1 px-4 py-2 text-sm font-medium text-black bg-emerald-500 rounded-full hover:bg-emerald-400 transition-all transform hover:scale-105"
+                      className="w-full px-4 py-2 text-sm font-medium text-black bg-emerald-500 rounded-full hover:bg-emerald-400 transition-all transform hover:scale-105"
                     >
                       Apply to This Position
-                    </button>
-                    <button className="px-4 py-2 text-sm font-mono text-emerald-500 border border-emerald-500/30 rounded-full hover:bg-emerald-500/10 transition-all">
-                      Export Research
                     </button>
                   </div>
                 </div>

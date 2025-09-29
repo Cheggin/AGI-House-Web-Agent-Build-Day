@@ -81,13 +81,14 @@ async def apply_to_rochester_regional_health(info: dict, llm: str, resume_path: 
                 - "Disability status"
             7) use input_text action to fill out the following:
                 - "Today's date"
+            8) CLICK THE SUBMIT BUTTON AND CHECK FOR A SUCCESS SCREEN. Once there is a success screen, complete your end task of writing final_result and outputting it.
     - Before you start, create a step-by-step plan to complete the entire task. make sure the delegate a step for each field to be filled out.
     *** IMPORTANT ***: 
         - You are not done until you have filled out every field of the form.
-        - When you have completed the entire form, perform the done action to finish the task.
+        - When you have completed the entire form, press the submit button to submit the application and use the done action once you have confirmed that the application is submitted
         - PLACE AN EMPHASIS ON STEP 4, the click_element_by_index action. That section should be filled out.
         - if anything pops up that blocks the form, close it out and continue filling out the form.
-        - At the end of the task, structure your final_result as 1) a human-readable summary of all detections and actions performed on the page with 2) a list with all questions encountered in the page.
+        - At the end of the task, structure your final_result as 1) a human-readable summary of all detections and actions performed on the page with 2) a list with all questions encountered in the page. Do not say "see above." Include a fully written out, human-readable summary at the very end.
     """
 
     available_file_paths = [resume_path]

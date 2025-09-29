@@ -18,7 +18,6 @@ import type * as candidates from "../candidates.js";
 import type * as jobExperiences from "../jobExperiences.js";
 import type * as jobs from "../jobs.js";
 import type * as questions from "../questions.js";
-import type * as research from "../research.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -34,7 +33,6 @@ declare const fullApi: ApiFromModules<{
   jobExperiences: typeof jobExperiences;
   jobs: typeof jobs;
   questions: typeof questions;
-  research: typeof research;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

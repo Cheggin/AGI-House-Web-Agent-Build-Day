@@ -106,25 +106,6 @@ export const seedJobs = mutation({
         ],
         postedDate: new Date().toISOString(),
         status: "active" as const,
-      },
-      {
-        title: "Assistant Manager",
-        company: "Hollister Co.",
-        location: "Santa Anita, Arcadia, CA",
-        salary: "$25.00 per hour",
-        description: "The Assistant Manager is a multi-faceted role that merges business strategy, operations, creativity, and people management. Strategically, assistant managers are responsible for driving sales results by analyzing the business and providing best-in-class customer service. They are responsible for overseeing daily store operations including opening and closing routines and driving efficiency in all store processes.\n\nAssistant managers leverage their creative expertise through floorset updates, styling recommendations and product knowledge. They are also talent leaders, driving everything from recruiting and training to engagement and development. With a promote from within philosophy, our Assistant managers will build upon their initial foundation and have the opportunity to grow into future leaders.",
-        requirements: [
-          "Bachelor's degree OR one year of supervisory experience in a customer-facing role",
-          "Strong problem-solving skills",
-          "Ability to thrive in a fast-paced environment",
-          "Team building and leadership skills",
-          "Strong interpersonal and communication skills",
-          "Fashion interest and knowledge",
-          "Multi-tasking abilities",
-          "Drive to achieve results"
-        ],
-        postedDate: new Date().toISOString(),
-        status: "active" as const,
       }
     ];
 
@@ -162,25 +143,6 @@ export const clearAndReseedJobs = mutation({
           "Ability to work evening shifts (2pm-10pm)",
           "Strong communication and interpersonal skills",
           "Commitment to providing compassionate patient care"
-        ],
-        postedDate: new Date().toISOString(),
-        status: "active" as const,
-      },
-      {
-        title: "Assistant Manager",
-        company: "Hollister Co.",
-        location: "Santa Anita, Arcadia, CA",
-        salary: "$25.00 per hour",
-        description: "The Assistant Manager is a multi-faceted role that merges business strategy, operations, creativity, and people management. Strategically, assistant managers are responsible for driving sales results by analyzing the business and providing best-in-class customer service. They are responsible for overseeing daily store operations including opening and closing routines and driving efficiency in all store processes.\n\nAssistant managers leverage their creative expertise through floorset updates, styling recommendations and product knowledge. They are also talent leaders, driving everything from recruiting and training to engagement and development. With a promote from within philosophy, our Assistant managers will build upon their initial foundation and have the opportunity to grow into future leaders.",
-        requirements: [
-          "Bachelor's degree OR one year of supervisory experience in a customer-facing role",
-          "Strong problem-solving skills",
-          "Ability to thrive in a fast-paced environment",
-          "Team building and leadership skills",
-          "Strong interpersonal and communication skills",
-          "Fashion interest and knowledge",
-          "Multi-tasking abilities",
-          "Drive to achieve results"
         ],
         postedDate: new Date().toISOString(),
         status: "active" as const,
