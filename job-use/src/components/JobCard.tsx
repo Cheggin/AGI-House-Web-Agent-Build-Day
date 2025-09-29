@@ -28,42 +28,58 @@ const JobCard: React.FC<JobCardProps> = ({ job, applied = false }) => {
     showToast('🤖 AI Agent is starting the application process...', 'info');
 
     try {
-      // Simulate 3-second loading for demo
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      let agentSummary: string | undefined = undefined;
 
-      // Create a record in Convex for tracking (this will generate the detailed agent trace)
+      // Check if this is the Rochester Regional Health job
+      if (job.company.includes('Rochester Regional Health')) {
+        try {
+          // Call the backend API for real automation
+          const response = await fetch('http://localhost:8000/apply/rochester-regional-health/test', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            mode: 'cors',
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+              agentSummary = result.result;
+              console.log('Backend automation completed:', agentSummary);
+              showToast('🎯 Real automation completed successfully!', 'success');
+            }
+          } else {
+            console.error('Backend response not OK:', response.status);
+            showToast('⚠️ Backend automation failed, using mock data', 'warning');
+          }
+        } catch (backendError) {
+          console.error('Backend call failed:', backendError);
+          showToast('⚠️ Could not connect to backend, using mock data', 'warning');
+        }
+      } else {
+        // For non-Rochester jobs, simulate delay
+        await new Promise(resolve => setTimeout(resolve, 3000));
+      }
+
+      // Create application record in Convex with real or mock data
       await createApplication({
         candidateId: user._id,
         jobId: job._id,
         coverLetter: `Applied via Job Use AI Agent to ${job.title} position at ${job.company}.`,
+        agentSummary: agentSummary, // Pass real summary if available
       });
 
       showToast('✅ Application submitted successfully!', 'success');
 
       // Show additional success message after a delay
       setTimeout(() => {
-        showToast('🎯 AI Agent completed all form fields. Check Agent Trace for details!', 'success');
-      }, 1500);
-
-      /* TEMPORARILY DISABLED FOR DEMO - Uncomment to re-enable API calls
-      // Check if this is the Rochester Regional Health job
-      if (job.company.includes('Rochester Regional Health')) {
-        // Call the FastAPI backend - simple POST without body
-        const response = await fetch('http://localhost:8000/apply/rochester-regional-health/test', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          mode: 'cors',
-        });
-
-        if (!response.ok) {
-          throw new Error(`Application failed: ${response.statusText}`);
+        if (agentSummary) {
+          showToast('🎯 Real application completed! Check Agent Trace for details!', 'success');
+        } else {
+          showToast('🎯 AI Agent completed all form fields. Check Agent Trace for details!', 'success');
         }
-
-        const result = await response.json();
-      }
-      */
+      }, 1500);
 
     } catch (error) {
       console.error('Application error:', error);

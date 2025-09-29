@@ -6,6 +6,7 @@ export const createApplication = mutation({
     candidateId: v.id("candidates"),
     jobId: v.id("jobs"),
     coverLetter: v.optional(v.string()),
+    agentSummary: v.optional(v.string()),
   },
   returns: v.id("applications"),
   handler: async (ctx, args) => {
@@ -19,8 +20,8 @@ export const createApplication = mutation({
       throw new Error("You have already applied for this job");
     }
 
-    // Generate detailed agent trace data
-    const agentSummary = `📄  Final Result:
+    // Use provided agentSummary or generate mock data
+    const agentSummary = args.agentSummary || `📄  Final Result:
 Successfully completed job application form with the following actions:
 - Filled 7 text input fields (First Name, Last Name, Email, Phone, Postal Code, City, Today's Date)
 - Uploaded resume document (test_CV.pdf) and verified upload
