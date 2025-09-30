@@ -26,5 +26,5 @@ Once all three services are running, open your browser to access the application
 
 > **Notes**
 > - this app is a work in progress, we are continuously improving the functionality and user experience.
-> - as of sept. 29, 2024, the backend is mocked and the main functionality is to autofill the Rochester Regional Health application form with mock data. More features will be added soon.
+> - as of sept. 29, 2025, the backend is mocked and the main functionality is to autofill the Rochester Regional Health application form with mock data. More features will be added soon.
 > - From Reagan: We hope to potentially turn this into a full-fledged job platform and perhaps host it with auth and a domain! We could also use Browser Use to do this by scraping / searching for open job applications regularly! 
