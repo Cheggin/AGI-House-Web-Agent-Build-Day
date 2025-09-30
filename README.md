@@ -19,13 +19,7 @@ python api.py
 ```bash
 cd frontend
 npm install
-npm run dev
-```
-
-**Terminal 3 - Convex Database:**
-```bash
-cd frontend
-npx convex dev # you need to set up your own Convex project, see https://docs.convex.dev/quickstart
+npm run dev # you need to set up your own Convex project, see https://docs.convex.dev/quickstart
 ```
 
 Once all three services are running, open your browser to access the application.
