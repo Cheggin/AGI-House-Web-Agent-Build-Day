@@ -1,4 +1,4 @@
-# Job Use
+# Job Use  <img src="job-use/public/job-use-logo.svg" alt="Job Use Logo" width="32" height="32" style="vertical-align: bottom; margin-left: 8px;">
 
 ## Setup Instructions
 1. Clone the repository into your local machine.
